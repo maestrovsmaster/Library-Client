@@ -11,7 +11,7 @@ import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:leeds_library/presentation/widgets/custom_yellow_icon_button.dart';
 import 'package:leeds_library/presentation/widgets/welcome_box.dart';
 
-import 'custom_green_icon_button.dart';
+import '../../widgets/custom_green_icon_button.dart';
 
 
 class WelcomeScreen extends StatefulWidget {
@@ -54,6 +54,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
             BlocListener<WelcomeBloc, WelcomeState>(
               listener: (context, state) {
                 if (state is WelcomeAuthenticated) {
+                  print("WelcomeAuthenticated");
                   context.pushReplacement(AppRoutes.main);
                 }
               },

@@ -22,6 +22,11 @@ class GoogleSignInScreen extends StatelessWidget {
               if (state is Authenticated) {
                 print("Authenticated with user: ${state.user}");
 
+                context.pushReplacement(AppRoutes.main);
+              }
+              if (state is GoogleAuthenticated) {
+                print("Authenticated with user: ${state.user}");
+
                 context.pushReplacement(AppRoutes.register, extra: state.user);
               }
             },

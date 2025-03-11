@@ -8,6 +8,7 @@ import 'package:leeds_library/presentation/block/user_google_auth/google_auth_bl
 import 'package:leeds_library/presentation/block/user_register/register_block.dart';
 import 'package:leeds_library/presentation/block/user_register/register_event.dart';
 import 'package:leeds_library/presentation/block/user_register/register_state.dart';
+import 'package:leeds_library/presentation/navigation/app_router.dart';
 
 
 class RegisterScreen extends StatelessWidget {
@@ -58,7 +59,8 @@ class RegisterScreen extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Registration successful!")),
                         );
-                        context.pop(); // GoRouter повертається назад
+                        //context.pop(); // GoRouter повертається назад
+                        context.pushReplacement(AppRoutes.welcome);
                       }
                     },
                     builder: (context, state) {

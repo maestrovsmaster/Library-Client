@@ -5,6 +5,8 @@ import 'package:hive/hive.dart';
 import 'package:leeds_library/data/net/global_interceptor.dart';
 import 'package:leeds_library/domain/repositories/google_auth_repository.dart';
 import 'package:leeds_library/domain/repositories/sign_in_repository.dart';
+import 'package:leeds_library/presentation/block/main_screen/main_screen_block.dart';
+import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
 import 'package:leeds_library/presentation/block/user_google_auth/google_auth_block.dart';
 import 'package:leeds_library/presentation/block/user_register/register_block.dart';
 import 'package:leeds_library/presentation/block/welcome/welcome_block.dart';
@@ -39,15 +41,17 @@ Future<void> init({String mockType = 'assets'}) async {
   dio.options.baseUrl = "http://192.168.0.25:5001/library-541e4/us-central1";
   sl.registerLazySingleton(() => dio);
 
-  sl.registerFactory(() => WelcomeBloc(repository: sl<SignInRepository>()));
+  sl.registerLazySingleton(() => UserCubit());
 
-  sl.registerLazySingleton(() => GoogleAuthRepository(sl<Dio>()));
-  sl.registerLazySingleton(() => GoogleAuthBloc(sl<AuthInterceptor>(),
-      sl<GoogleAuthRepository>()));
-
-
+  sl.registerFactory(() => WelcomeBloc(repository: sl<SignInRepository>(), userCubit: sl<UserCubit>(), authInterceptor: sl<AuthInterceptor>()));
 
   sl.registerLazySingleton(() => SignInRepository(sl<Dio>()));
+
+  //sl.registerLazySingleton(() => GoogleAuthRepository(sl<Dio>()));
+  sl.registerLazySingleton(() => GoogleAuthBloc(sl<AuthInterceptor>(),
+      sl<SignInRepository>()));
+
+
   sl.registerLazySingleton(() => RegisterBloc(repository:sl<SignInRepository>()));
 
 
@@ -98,5 +102,5 @@ Future<void> init({String mockType = 'assets'}) async {
 
  //sl.registerFactory(() => SignInBloc(repository: sl<SignInRepository>()));
 
- // sl.registerFactory(() => MainScreenBloc(repository: sl<SignInRepository>()));
+  sl.registerFactory(() => MainScreenBloc(repository: sl<SignInRepository>()));
 }

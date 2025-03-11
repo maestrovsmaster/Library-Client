@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:leeds_library/data/models/app_user.dart';
-
+/*
 class GoogleAuthRepository {
   final Dio _dio;
   GoogleAuthRepository(this._dio);
@@ -40,15 +40,7 @@ class GoogleAuthRepository {
     print("verifyTokenWithServer idtoken = $idToken");
 
     try {
-      /*final response = await dio.post(
-        '$baseUrl/auth-verifyToken',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $idToken',
-          },
-        ),
-      );*/
+
       final response = await _dio.post(
         '/auth-verifyToken',
         options: Options(headers: {'Content-Type': 'application/json'}),
@@ -67,4 +59,4 @@ class GoogleAuthRepository {
   }
 
 
-}
+}*/

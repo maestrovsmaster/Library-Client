@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:leeds_library/data/models/app_user.dart';
+import 'package:leeds_library/presentation/screens/main_screen/main_screen.dart';
 import 'package:leeds_library/presentation/screens/register_user_screen/register_screen.dart';
 import 'package:leeds_library/presentation/screens/sign_in_google_screen/google_sign_in_screen.dart';
 import 'package:leeds_library/presentation/screens/welcome_screen/welcome_screen.dart';
@@ -38,22 +39,15 @@ class AppRouter {
           return RegisterScreen(user: user);
         },
       ),
-     /* GoRoute(
-          path: AppRoutes.signIn,
-          pageBuilder: (context, state) {
-            return const CustomTransitionPage(
-              child: SignInScreen(),
-              transitionsBuilder: slideTransition,
-            );
-          }),*/
-      /*GoRoute(
+
+      GoRoute(
           path: AppRoutes.main,
           pageBuilder: (context, state) {
             return const CustomTransitionPage(
               child: MainScreen(),
               transitionsBuilder: slideTransition,
             );
-          }),*/
+          }),
       /*GoRoute(
         path: AppRoutes.details,
         pageBuilder: (context, state) {
