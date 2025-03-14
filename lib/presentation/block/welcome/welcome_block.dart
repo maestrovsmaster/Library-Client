@@ -29,13 +29,17 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
       print("on<CheckAuthStatus> 2");
       final result = await repository.verifyTokenWithServer();
       if (result.isSuccess) {
-        final user = FirebaseAuth.instance.currentUser;
-        print("Authentificated user welcome: ${user?.displayName}");
-        if(user != null && user.displayName != null){
-          print("Authentificated user: ${user.displayName}");
-          userCubit.setUser(result.data!);
-          emit(WelcomeAuthenticated());
-        }else{
+        final appUser = result.data;// final appUser = FirebaseAuth.instance.currentUser;
+        print("Authentificated user welcome: ${appUser?.name}");
+        if(appUser != null ) {
+          if ( appUser.name.isNotEmpty) {
+            print("Authentificated user with name: ${appUser.name}");
+            userCubit.setUser(result.data!);
+            emit(WelcomeAuthenticated());
+          } else {
+            emit(UserNotCompleted(appUser));
+          }
+        }else {
           emit(WelcomeUnauthenticated());
         }
       } else {

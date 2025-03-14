@@ -53,6 +53,10 @@ class WelcomeScreenState extends State<WelcomeScreen>
             ),
             BlocListener<WelcomeBloc, WelcomeState>(
               listener: (context, state) {
+                if (state is UserNotCompleted) {
+                  print("WelcomeAuthenticated");
+                  context.pushReplacement(AppRoutes.register,extra: state.user);
+                }
                 if (state is WelcomeAuthenticated) {
                   print("WelcomeAuthenticated");
                   context.pushReplacement(AppRoutes.main);
