@@ -29,12 +29,14 @@ class GoogleAuthBloc extends Bloc<GoogleAuthEvent, GoogleAuthState> {
       emit(GoogleAuthLoading());
       final result = await _authRepository.verifyTokenWithServer();
       if (result.isSuccess) {
+        print("AppUser isSuccess");
         if (result.data != null) {
           final appUser = result.data!;
+          print("================= AppUser isSuccess $appUser");
           if(appUser.name != null && appUser.name.isNotEmpty) {
             emit(Authenticated(result.data!));
           }else{
-            emit(GoogleUnauthenticated());
+            emit(AuthenticatedButNotCompleted(result.data!));
           }
         } else {
           emit(GoogleUnauthenticated());

@@ -32,17 +32,7 @@ class BarcodeScannerBloc
     print("event.code = ${event.code}");
     final bookResult = await booksRepository.getBookByBarcode(event.code);
     print("getBookByBarcode bookResult = $bookResult  isSuccess = ${bookResult.isSuccess}");
-   /* if (bookResult.isSuccess) {
-      final book = bookResult.data;
-      if (book != null) {
-        emit(BookFound(event.code, book));
-      } else {
-        print("getBookByBarcode BookNotFound");
-        emit(BookNotFound(event.code));
-      }
-    } else {
-      emit(ServerError(bookResult.error ?? "Unknown error"));
-    }*/
+
 
     if (bookResult.isSuccess) {
       print("Book found: ${bookResult.data}");

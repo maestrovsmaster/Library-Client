@@ -69,6 +69,11 @@ dependencies:
 
   mobile_scanner: ^3.5.7
   permission_handler: ^11.3.0
+  image_picker: ^1.1.2
+
+  google_mlkit_text_recognition: ^0.14.0
+  camera: ^0.11.1
+  flutter_tesseract_ocr: ^0.4.28
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +89,8 @@ flutter:
   assets:
     - .env
     - assets/i18n/
+    - assets/tessdata/
+    - assets/tessdata_config.json
     - assets/images/lib_logo.png
     - assets/images/ic_collection.svg
     - assets/images/ic_scan.svg

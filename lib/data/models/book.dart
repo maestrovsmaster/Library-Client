@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Book {
   final String id;
   final String title;
@@ -47,6 +49,25 @@ class Book {
       'barcode': barcode,
       'isAvailable': isAvailable,
     };
+  }
+
+  factory Book.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>?; // Конвертуємо Firestore-документ у Map
+    if (data == null) {
+      throw Exception("Документ не містить даних");
+    }
+
+    return Book(
+      id: doc.id, // ID беремо з самого документа Firestore
+      title: data['title'] ?? '',
+      author: data['author'] ?? '',
+      genre: data['genre'] ?? '',
+      publisher: data['publisher'] ?? '',
+      description: data['description'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
+      barcode: data['barcode'] ?? '',
+      isAvailable: data['isAvailable'] ?? true,
+    );
   }
 
   Book copyWith({

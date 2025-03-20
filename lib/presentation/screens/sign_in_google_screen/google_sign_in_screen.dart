@@ -24,7 +24,7 @@ class GoogleSignInScreen extends StatelessWidget {
 
                 context.pushReplacement(AppRoutes.main);
               }
-              if (state is GoogleAuthenticated) {
+              if (state is AuthenticatedButNotCompleted) {
                 print("Authenticated with user: ${state.user}");
 
                 context.pushReplacement(AppRoutes.register, extra: state.user);
@@ -33,7 +33,7 @@ class GoogleSignInScreen extends StatelessWidget {
             builder: (context, state) {
               if (state is GoogleAuthLoading) {
                 return CircularProgressIndicator();
-              } if(state is GoogleAuthenticated){
+              } if(state is AuthenticatedButNotCompleted){
                 return Text("Authenticated with user: ${state.user}");
               }
               return ElevatedButton(

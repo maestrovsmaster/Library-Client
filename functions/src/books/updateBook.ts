@@ -11,7 +11,7 @@ export const updateBook = functions.https.onRequest(async (req, res) => {
              res.status(400).json({ message: "Missing book ID" });
         }
 
-        const bookRef = admin.firestore().collection('Books').doc(id);
+        const bookRef = admin.firestore().collection('books').doc(id);
         const bookDoc = await bookRef.get();
 
         if (!bookDoc.exists) {

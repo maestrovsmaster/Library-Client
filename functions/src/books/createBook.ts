@@ -24,7 +24,7 @@ export const createBook = functions.https.onRequest(async (req, res) => {
             updatedAt: Timestamp.now(),
         };
 
-        const bookRef = await admin.firestore().collection('Books').add(newBook);
+        const bookRef = await admin.firestore().collection('books').add(newBook);
 
          res.status(201).json({ id: bookRef.id, ...newBook });
     } catch (error) {

@@ -8,7 +8,9 @@ import 'package:leeds_library/presentation/block/main_screen/main_screen_event.d
 import 'package:leeds_library/presentation/block/main_screen/main_screen_state.dart';
 import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:leeds_library/presentation/screens/barcode_scanner_screen/barcode_scanner_screen.dart';
+import 'package:leeds_library/presentation/screens/books_list/books_list_screen.dart';
 import 'package:leeds_library/presentation/screens/placeholder_screen/placeholder_screen.dart';
+import 'package:leeds_library/presentation/screens/text_recognize_screen.dart';
 import 'package:leeds_library/presentation/widgets/confirm_dialog.dart';
 import 'package:leeds_library/presentation/widgets/notifications_widget.dart';
 
@@ -89,9 +91,9 @@ class MainScreen extends StatelessWidget {
   Widget _getSelectedScreen(int index) {
     switch (index) {
       case 0:
-        return BarcodeScannerScreen();
+        return  BarcodeScannerScreen(); // TextRecognizeScreen();
       case 1:
-        return PlaceholderScreen(title: translate('tab_main')); //const CollectionsListScreen();
+        return  BooksListScreen();//PlaceholderScreen(title: translate('tab_main')); //const CollectionsListScreen();
       case 2:
         return PlaceholderScreen(title: translate('tab_shop'));
       case 3:

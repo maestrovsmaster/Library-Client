@@ -4,7 +4,10 @@ import 'package:leeds_library/core/theme/app_theme.dart';
 
 import 'package:leeds_library/core/di/di_container.dart' as di;
 import 'package:leeds_library/domain/repositories/books_repository.dart';
+import 'package:leeds_library/presentation/block/add_book/add_book_bloc.dart';
 import 'package:leeds_library/presentation/block/barcode_scanner/barcode_scanner_block.dart';
+import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
+import 'package:leeds_library/presentation/block/text_recognize/text_recognize_block.dart';
 import 'package:leeds_library/presentation/block/user_google_auth/google_auth_block.dart';
 import 'package:leeds_library/presentation/block/user_register/register_block.dart';
 
@@ -26,7 +29,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (context) => di.sl<RegisterBloc>()//..add(GoogleAuthInitial()),
         ),
-        BlocProvider(create: (context) => di.sl<BarcodeScannerBloc>())
+        BlocProvider(create: (context) => di.sl<BarcodeScannerBloc>()),
+        BlocProvider(create: (context) => di.sl<AddBookBloc>()),
+        BlocProvider(create: (context) => di.sl<TextRecognizerBloc>()),
+        BlocProvider(create: (context) => di.sl<BooksListBloc>()),
       ],
       child: MaterialApp.router(
         title: 'Flutter Task',

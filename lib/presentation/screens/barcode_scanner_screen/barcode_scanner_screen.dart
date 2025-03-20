@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:leeds_library/core/di/di_container.dart';
 import 'package:leeds_library/presentation/block/barcode_scanner/barcode_scanner_block.dart';
 import 'package:leeds_library/presentation/block/barcode_scanner/barcode_scanner_event.dart';
 import 'package:leeds_library/presentation/block/barcode_scanner/barcode_scanner_state.dart';
+import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class BarcodeScannerScreen extends StatelessWidget {
@@ -58,6 +60,8 @@ class BarcodeScannerScreen extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {
                           //go to create book
+                          context.push(AppRoutes.addBook, extra: state.barcode);
+
                         },
                         child: Text("Add new book"),
                       ),
