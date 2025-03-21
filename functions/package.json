@@ -20,8 +20,10 @@
     "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
+    "@jest/core": "^29.7.0",
     "@types/cors": "^2.8.17",
     "firebase-functions-test": "^3.1.0",
+    "jest": "^29.7.0",
     "typescript": "^5.8.2"
   },
   "private": true

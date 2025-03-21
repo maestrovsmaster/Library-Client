@@ -5,26 +5,55 @@ import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/presentation/block/books_list/books_list_event.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_state.dart';
+import 'package:leeds_library/presentation/widgets/barcode_scanner_dialog/barcode_scanner_dialog.dart';
 
 import 'book_item.dart';
 
 class BooksListScreen extends StatelessWidget {
+
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<BooksListBloc>()..add(LoadBooksEvent()),
       child: Scaffold(
         appBar: AppBar(
-          title: BlocBuilder<BooksListBloc, BooksListState>(
-            builder: (context, state) {
+          title: StatefulBuilder(
+            builder: (context, setState) {
+              _searchController.addListener(() {
+                setState(() {});
+              });
+
               return TextField(
+                controller: _searchController,
                 decoration: InputDecoration(
                   hintText: "Пошук книги...",
-                  prefixIcon: Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.camera_alt),
+                  prefixIcon: _searchController.text.isEmpty
+                      ? Icon(Icons.search)
+                      : Icon(Icons.search),
+                  suffixIcon: _searchController.text.isNotEmpty
+                      ? IconButton(
+                    icon: Icon(Icons.clear),
                     onPressed: () {
-                      // TODO: Реалізувати сканування штрихкоду
+                      _searchController.clear();
+                      context
+                          .read<BooksListBloc>()
+                          .add(SearchQueryChangedEvent(''));
+                    },
+                  )
+                      : IconButton(
+                    icon: Icon(Icons.camera_alt),
+                    onPressed: () async{
+                      final result = await showDialog<String>(
+                        context: context,
+                        builder: (_) => const BarcodeScannerDialog(),
+                      );
+
+                      if (result != null) {
+                        _searchController.value = TextEditingValue(text: result);
+                        context.read<BooksListBloc>().add(SearchQueryChangedEvent(result));
+                      }
                     },
                   ),
                 ),
@@ -37,6 +66,7 @@ class BooksListScreen extends StatelessWidget {
             },
           ),
         ),
+
         body: BlocBuilder<BooksListBloc, BooksListState>(
           builder: (context, state) {
             if (state is BooksStreamState) {
