@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'data/models/book.dart';
 import 'data/resseract_ocr/tesseract_ocr.dart';
 import 'firebase_options.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,10 +47,10 @@ Future<void> main() async {
 /// Initializes Hive storage and registers adapters.
 Future<void> _initHive() async {
   await Hive.initFlutter();
-  //Hive.registerAdapter(ItemModelAdapter());
-  // Hive.registerAdapter(TastingNotesAdapter());
-  // Hive.registerAdapter(HistoryEventAdapter());
-  await Hive.openBox('authBox');
+
+  Hive.registerAdapter(BookAdapter()); // Реєстрація адаптера
+
+  final bookBox = await Hive.openBox<Book>('books');
 }
 
 /// Loads mock data source type from .env file or falls back to default.

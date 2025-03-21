@@ -24,36 +24,36 @@ class AppTheme {
       ),
       textTheme: TextTheme(
         //For Title
-        displayLarge: GoogleFonts.ebGaramond(
+        displayLarge: GoogleFonts.literata(
           fontSize: 32,
           fontWeight: FontWeight.w500,
           color: AppColors.primaryText,
         ),
-        headlineMedium: GoogleFonts.ebGaramond(
+        headlineMedium: GoogleFonts.literata(
           fontSize: 24,
           fontWeight: FontWeight.bold,
           color: AppColors.primaryText,
         ),
         //For Card Item title
-        titleLarge: GoogleFonts.ebGaramond(
+        titleLarge: GoogleFonts.literata(
           fontSize: 22,
           fontWeight: FontWeight.w500,
           color: AppColors.primaryText,
         ),
 
         //For item details keys
-        bodyLarge: GoogleFonts.lato(
+        bodyLarge: GoogleFonts.literata(
           fontSize: 16,
           fontWeight: FontWeight.w400,
           color: AppColors.primaryText,
         ),
         //For Card Item subtitle
-        bodyMedium: GoogleFonts.lato(
+        bodyMedium: GoogleFonts.literata(
           fontSize: 12,
           fontWeight: FontWeight.w400,
           color: AppColors.secondaryText,
         ),
-        labelLarge: GoogleFonts.lato(
+        labelLarge: GoogleFonts.literata(
           fontSize: 14,
           fontWeight: FontWeight.w500,
           color: AppColors.primaryText,
@@ -62,7 +62,7 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.background,
         elevation: 0,
-        titleTextStyle: GoogleFonts.ebGaramond(
+        titleTextStyle: GoogleFonts.literata(
           color: AppColors.primaryText,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -76,7 +76,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          textStyle: GoogleFonts.lato(
+          textStyle: GoogleFonts.literata(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -87,12 +87,12 @@ class AppTheme {
         selectedItemColor: AppColors.tabActive,
         unselectedItemColor: AppColors.tabInactive,
         type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: GoogleFonts.lato(
+        selectedLabelStyle: GoogleFonts.literata(
           fontSize: 12,
           fontWeight: FontWeight.w400,
           color: AppColors.accentColor,
         ),
-        unselectedLabelStyle: GoogleFonts.lato(
+        unselectedLabelStyle: GoogleFonts.literata(
           fontSize: 12,
           fontWeight: FontWeight.w400,
           color: AppColors.tabInactive,

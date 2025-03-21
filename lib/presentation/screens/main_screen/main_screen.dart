@@ -36,7 +36,7 @@ class MainScreen extends StatelessWidget {
 
               if (state is MainScreenInitial) {
                 return Scaffold(
-                    appBar: PreferredSize(
+                   /* appBar: PreferredSize(
                         preferredSize: const Size.fromHeight(72),
                         child: AppBar(
                           title: Text(
@@ -57,7 +57,7 @@ class MainScreen extends StatelessWidget {
                               ],
                             ),
                           ],
-                        )),
+                        )),*/
                     body: _getSelectedScreen(state.selectedIndex),
                     bottomNavigationBar: MainScreenBottomNavigationBar(
                       currentIndex: state.selectedIndex,

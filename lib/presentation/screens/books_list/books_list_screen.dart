@@ -6,7 +6,6 @@ import 'package:leeds_library/presentation/block/books_list/books_list_event.dar
 import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_state.dart';
 
-
 import 'book_item.dart';
 
 class BooksListScreen extends StatelessWidget {
@@ -30,7 +29,9 @@ class BooksListScreen extends StatelessWidget {
                   ),
                 ),
                 onChanged: (query) {
-                  context.read<BooksListBloc>().add(SearchQueryChangedEvent(query));
+                  context
+                      .read<BooksListBloc>()
+                      .add(SearchQueryChangedEvent(query));
                 },
               );
             },
@@ -42,14 +43,27 @@ class BooksListScreen extends StatelessWidget {
               return StreamBuilder<List<Book>>(
                 stream: state.booksStream,
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                  if (!snapshot.hasData)
+                    return Center(child: CircularProgressIndicator());
+
+
+
                   final books = snapshot.data!;
+
+
+
                   return books.isEmpty
                       ? Center(child: Text("Нічого не знайдено"))
-                      : ListView.builder(
-                    itemCount: books.length,
-                    itemBuilder: (context, index) => BookItem(book: books[index]),
-                  );
+                      : ListView.separated(
+                          separatorBuilder: (context, index) =>
+                              Divider(height: 0.5, color: Colors.grey[300]),
+                          itemCount: books.length,
+                          itemBuilder: (context, index) => BookItem(
+                              book: books[index],
+                              onTap: (book) {
+                                // context.read<BooksListBloc>().add(BookSelectedEvent(book));
+                              }),
+                        );
                 },
               );
             } else if (state is BooksErrorState) {

@@ -1,14 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
 
+part 'book.g.dart';
+
+//Command for generating Hive models: flutter pub run build_runner build
+@HiveType(typeId: 0)
 class Book {
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String title;
+
+  @HiveField(2)
   final String author;
+
+  @HiveField(3)
   final String genre;
+
+  @HiveField(4)
   final String publisher;
+
+  @HiveField(5)
   final String description;
+
+  @HiveField(6)
   final String imageUrl;
+
+  @HiveField(7)
   final String barcode;
+
+  @HiveField(8)
   final bool isAvailable;
 
   Book({
@@ -92,4 +114,6 @@ class Book {
       isAvailable: isAvailable ?? this.isAvailable,
     );
   }
+
+  static Book empty() => Book(id: '', title: '', barcode: '', author: '', genre: '', publisher: '', description: '', imageUrl: '', isAvailable: false);
 }

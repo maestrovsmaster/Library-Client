@@ -1,87 +1,70 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
 import 'package:leeds_library/data/models/book.dart';
+import 'package:rxdart/rxdart.dart';
 
 class BooksFirebaseRepository {
   final FirebaseFirestore firestore;
-  final List<Book> _cachedBooks = [];
+  final Box<Book> bookBox;
 
-  BooksFirebaseRepository({required this.firestore});
+  final BehaviorSubject<List<Book>> _booksController = BehaviorSubject.seeded([]);
 
-  // Підписка на Firestore (один раз на старті)
-  void listenToBooksUpdates() {
-    firestore.collection("books").snapshots().listen((snapshot) {
-      for (var change in snapshot.docChanges) {
-        if (change.type == DocumentChangeType.added) {
-          _cachedBooks.add(Book.fromFirestore(change.doc));
-        } else if (change.type == DocumentChangeType.modified) {
-          var updatedBook = Book.fromFirestore(change.doc);
-          int index = _cachedBooks.indexWhere((b) => b.id == updatedBook.id);
-          if (index != -1) _cachedBooks[index] = updatedBook;
-        } else if (change.type == DocumentChangeType.removed) {
-          _cachedBooks.removeWhere((b) => b.id == change.doc.id);
-        }
-      }
-    });
+  BooksFirebaseRepository(this.firestore, this.bookBox) {
+    _loadCachedBooks();
+    _listenToFirestore();
   }
 
-  // Отримати всі книги (із кешу або Firestore, якщо кеш пустий)
-  Future<List<Book>> getBooks() async {
-    if (_cachedBooks.isNotEmpty) return _cachedBooks;
+  Stream<List<Book>> get booksStream => _booksController.stream;
 
-    var snapshot = await firestore.collection("books").get();
-    _cachedBooks.clear();
-    _cachedBooks.addAll(snapshot.docs.map((doc) => Book.fromFirestore(doc)));
-    return _cachedBooks;
-  }
-
-
-
-  final StreamController<List<Book>> _booksStreamController = StreamController.broadcast();
-
-
-  Stream<List<Book>> getBooksStream() {
-    // Якщо є кеш → одразу віддаємо його у стрім
-    if (_cachedBooks.isNotEmpty) {
-      _booksStreamController.add(List<Book>.from(_cachedBooks));
-    } else {
-      // Якщо кешу нема, виконуємо разовий запит у Firestore
-      firestore.collection("books").get().then((snapshot) {
-        _cachedBooks.clear();
-        _cachedBooks.addAll(snapshot.docs.map((doc) => Book.fromFirestore(doc)));
-        _booksStreamController.add(List<Book>.from(_cachedBooks));
-      });
+  void _loadCachedBooks() {
+    if (bookBox.isNotEmpty) {
+      _booksController.add(bookBox.values.toList());
     }
+  }
 
-    // Запускаємо підписку на Firestore, щоб отримувати оновлення в реальному часі
-    firestore.collection("books").snapshots().listen((snapshot) {
+  void _listenToFirestore() {
+    firestore.collection("books-dev").snapshots().listen((snapshot) {
+      if (snapshot.metadata.isFromCache && !snapshot.metadata.hasPendingWrites) {
+        return;
+      }
       bool hasChanges = false;
+      var books = [..._booksController.value];
 
       for (var change in snapshot.docChanges) {
+        var book = Book.fromFirestore(change.doc);
+
         if (change.type == DocumentChangeType.added) {
-          _cachedBooks.add(Book.fromFirestore(change.doc));
-          hasChanges = true;
-        } else if (change.type == DocumentChangeType.modified) {
-          var updatedBook = Book.fromFirestore(change.doc);
-          int index = _cachedBooks.indexWhere((b) => b.id == updatedBook.id);
-          if (index != -1) {
-            _cachedBooks[index] = updatedBook;
+          if (!books.any((b) => b.id == book.id)) {
+            books.add(book);
             hasChanges = true;
           }
-        } else if (change.type == DocumentChangeType.removed) {
-          _cachedBooks.removeWhere((b) => b.id == change.doc.id);
+        }
+        else if (change.type == DocumentChangeType.removed) {
+          books.removeWhere((b) => b.id == book.id);
           hasChanges = true;
+        }
+        else if (change.type == DocumentChangeType.modified) {
+          var index = books.indexWhere((b) => b.id == book.id);
+          if (index != -1 && books[index].barcode != book.barcode) {
+            books[index] = book;
+            hasChanges = true;
+          }
         }
       }
 
-      //  Якщо є зміни, оновлюємо стрім
       if (hasChanges) {
-        _booksStreamController.add(List<Book>.from(_cachedBooks));
+        _booksController.add(books);
+        _cacheBooks(books);
       }
     });
-
-    return _booksStreamController.stream;
   }
+
+  void _cacheBooks(List<Book> books) async {
+    await bookBox.clear();
+    await bookBox.addAll(books);
+  }
+
 
 }

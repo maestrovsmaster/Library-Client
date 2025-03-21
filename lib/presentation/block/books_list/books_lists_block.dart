@@ -3,14 +3,18 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/domain/repositories/books_firebase_repository.dart';
+import 'package:rxdart/rxdart.dart';
 import 'books_list_event.dart';
 import 'books_lists_state.dart';
 
 class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
   final BooksFirebaseRepository booksRepository;
-  final StreamController<List<Book>> _filteredBooksController = StreamController.broadcast();
+  final _filteredBooksController = BehaviorSubject<List<Book>>();
+
   List<Book> _allBooks = [];
   String _currentQuery = '';
+
+  Stream<List<Book>> get filteredBooksStream => _filteredBooksController.stream;
 
   BooksListBloc({required this.booksRepository}) : super(BooksInitialState()) {
     on<LoadBooksEvent>(_onLoadBooks);
@@ -19,12 +23,14 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
 
   Future<void> _onLoadBooks(LoadBooksEvent event, Emitter<BooksListState> emit) async {
     try {
-      final booksStream = booksRepository.getBooksStream();
-      booksStream.listen((books) {
+      if (state is BooksStreamState) return;
+
+      emit(BooksStreamState(filteredBooksStream));
+
+      booksRepository.booksStream.listen((books) {
         _allBooks = books;
         _applyFilter();
       });
-      emit(BooksStreamState(_filteredBooksController.stream));
     } catch (e) {
       emit(BooksErrorState("Не вдалося завантажити книги"));
     }
@@ -36,18 +42,22 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
   }
 
   void _applyFilter() {
-    final filteredBooks = _allBooks.where((book) {
-      final lowerQuery = _currentQuery.toLowerCase().trim();
-      return book.title.toLowerCase().contains(lowerQuery) ||
-          book.author.toLowerCase().contains(lowerQuery) ||
-          book.barcode.toLowerCase() == lowerQuery;
+    final query = _currentQuery.toLowerCase().trim();
+
+    final filtered = query.isEmpty
+        ? _allBooks
+        : _allBooks.where((book) {
+      return book.title.toLowerCase().contains(query) ||
+          book.author.toLowerCase().contains(query) ||
+          book.barcode.toLowerCase() == query;
     }).toList();
 
-    _filteredBooksController.add(filteredBooks);
+    _filteredBooksController.add(filtered);
   }
 
   @override
   Future<void> close() {
+    print("Destroying BooksListBloc");
     _filteredBooksController.close();
     return super.close();
   }

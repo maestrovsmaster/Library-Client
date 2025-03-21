@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/data/net/global_interceptor.dart';
 import 'package:leeds_library/domain/repositories/books_firebase_repository.dart';
 import 'package:leeds_library/domain/repositories/books_repository.dart';
@@ -24,8 +25,8 @@ final sl = GetIt.instance;
 /// assets - mock data from assets
 /// generator - mock data from generator
 Future<void> init({String mockType = 'assets'}) async {
- // final itemBox = await Hive.openBox<ItemModel>('item_model_box');
- // sl.registerLazySingleton<Box<ItemModel>>(() => itemBox);
+  final itemBox = await Hive.openBox<Book>('books');
+  sl.registerLazySingleton<Box<Book>>(() => itemBox);
 
   final firebase = FirebaseFirestore.instance;
 
@@ -41,7 +42,7 @@ Future<void> init({String mockType = 'assets'}) async {
   sl.registerLazySingleton(() => SignInRepository(sl<Dio>()));
   sl.registerLazySingleton(() => BooksRepository(sl<Dio>()));
 
-  sl.registerLazySingleton(() => BooksFirebaseRepository(firestore: firebase));
+  sl.registerLazySingleton(() => BooksFirebaseRepository(firebase, itemBox));
 
   sl.registerFactory(() => WelcomeBloc(repository: sl<SignInRepository>(), userCubit: sl<UserCubit>(), authInterceptor: sl<AuthInterceptor>()));
 
