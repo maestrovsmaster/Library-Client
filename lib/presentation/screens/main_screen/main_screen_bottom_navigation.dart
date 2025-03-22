@@ -17,7 +17,7 @@ class MainScreenBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
         child: SizedBox(
-        height: 80,
+        height: 86,
          child: BottomNavigationBar(
           currentIndex: currentIndex,
           showUnselectedLabels: true,
@@ -31,19 +31,19 @@ class MainScreenBottomNavigationBar extends StatelessWidget {
             ),
             _buildNavItem(
               context,
-              iconPath: 'assets/images/ic_collection.svg',
+              iconPath: 'assets/images/ic_menu_book.svg',
               label: translate('tab_collection'),
               isSelected: currentIndex == 1,
             ),
             _buildNavItem(
               context,
-              iconPath: 'assets/images/ic_shop.svg',
-              label: translate('tab_shop'),
+              iconPath: 'assets/images/ic_book.svg',
+              label: translate('tab_reservations'),
               isSelected: currentIndex == 2,
             ),
             _buildNavItem(
               context,
-              iconPath: 'assets/images/ic_settings.svg',
+              iconPath: 'assets/images/ic_account.svg',
               label: translate('tab_settings'),
               isSelected: currentIndex == 3,
             ),
@@ -78,7 +78,7 @@ class MainScreenBottomNavigationBar extends StatelessWidget {
           : Icon(
               icon,
               color: isSelected
-                  ? Theme.of(context).colorScheme.primary
+                  ? AppColors.tabActive
                   : Colors.grey,
             ),
       label: translate(label),

@@ -3,12 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
 import 'package:leeds_library/data/models/app_user.dart';
+import 'package:leeds_library/data/net/global_interceptor.dart';
 import 'package:leeds_library/data/net/result.dart';
+import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
 
 class SignInRepository {
   final Dio _dio;
+  final UserCubit userCurent;
+  final AuthInterceptor authInterceptor;
 
-  SignInRepository(this._dio);
+  SignInRepository(this._dio, this.userCurent, this.authInterceptor);
 
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -34,6 +38,8 @@ class SignInRepository {
   Future<void> signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
+    userCurent.clearUser();
+    authInterceptor.updateToken('');
   }
 
 

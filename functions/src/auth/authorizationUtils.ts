@@ -58,8 +58,10 @@ async function verifyAuthorization(req: functions.https.Request): Promise<User |
 
         console.log("Authorization uid =", userId);
 
+        const postfix = req.query.postfix as string | undefined;
+        const collectionName = `users${postfix ? '-' + postfix : ''}`;
         // Перевіряємо, чи є користувач у базі даних
-        const userRef = admin.firestore().collection('Users').doc(userId);
+        const userRef = admin.firestore().collection(collectionName).doc(userId);
         const userDoc = await userRef.get();
 
         if (!userDoc.exists) {

@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:leeds_library/core/env/env_config.dart';
 import 'data/models/book.dart';
-import 'data/resseract_ocr/tesseract_ocr.dart';
 import 'firebase_options.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,7 +22,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  //await TesseractService.loadTessdata();
+
 
   // Initialize date formatting
   await initializeDateFormatting('en_GB', null);
@@ -29,16 +31,18 @@ Future<void> main() async {
   await _initHive();
 
   // Load environment variables and determine mock data source
-  final String mockType = await _loadMockType();
+  final envConfig = await _initEnv();
+  if (envConfig.useFirestoreEmulator == 'true') {
+    await _connectToFirebaseEmulator();
+  }
 
   // Initialize dependencies
-  await di.init(mockType: mockType);
+  await di.init(baseUrl: envConfig.baseUrl, postfix: envConfig.postfix);
 
   // Initialize localization
   final delegate = await _initLocalization();
 
-  // Set Bloc observer
- // Bloc.observer = BottleDetailsBlocObserver();
+
 
   // Run the app
   runApp(LocalizedApp(delegate, const MyApp()));
@@ -53,22 +57,37 @@ Future<void> _initHive() async {
   final bookBox = await Hive.openBox<Book>('books');
 }
 
-/// Loads mock data source type from .env file or falls back to default.
-/// Set the mock data source type in the .env file using MOCK_TYPE=assets or MOCK_TYPE=generator
-Future<String> _loadMockType() async {
-  String mockType = 'assets';
- /* try {
+
+Future<EnvConfig> _initEnv() async {
+
+  var envConfig = EnvConfig('http://192.168.0.25:5001/library-541e4/us-central1', '-dev', 'true');
+
+  try {
     await dotenv.load(fileName: ".env");
-    mockType = dotenv.env['MOCK_TYPE'] ?? 'assets';
+    final baseUrl = dotenv.env['BASE_URL'] ?? 'http://192.168.0.25:5001/library-541e4/us-central1';
+    final postfix = dotenv.env['POSTFIX'] ?? '';
+    final useFirestoreEmulator = dotenv.env['USE_FIRESTORE_EMULATOR'] ?? 'true';
+    envConfig = EnvConfig(baseUrl, postfix,useFirestoreEmulator);
   } catch (e) {
     if (kDebugMode) {
       debugPrint("Warning: .env file not found. Using default values.");
     }
   }
   if (kDebugMode) {
-    debugPrint("mockType: $mockType");
-  }*/
-  return mockType;
+    debugPrint("envConfig url: ${envConfig.baseUrl}");
+  }
+  return envConfig;
+}
+
+// flutter run --dart-define=USE_FIREBASE_EMULATOR=true
+Future<void> _connectToFirebaseEmulator() async {
+  const localhost = '192.168.0.25';//'10.0.2.2';
+
+  FirebaseFirestore.instance.useFirestoreEmulator(localhost, 8080);
+  //FirebaseAuth.instance.useAuthEmulator(localhost, 9099);
+  //FirebaseFunctions.instance.useFunctionsEmulator(localhost, 5001);
+
+  print('✅ Connected to Firebase emulators');
 }
 
 /// Initializes localization settings.

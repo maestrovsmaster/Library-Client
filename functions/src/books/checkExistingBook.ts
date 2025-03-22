@@ -15,19 +15,26 @@ export const checkExistingBook = functions.https.onRequest(async (req, res) => {
         const titleQuery = String(title).toLowerCase().trim();
         const authorQuery = String(author).toLowerCase().trim();
 
-        const booksRef = admin.firestore().collection("books");
+        const postfix = req.query.postfix as string | undefined;
+        const collectionName = `books${postfix ? '-' + postfix : ''}`;
+        const booksRef = admin.firestore().collection(collectionName);
 
         // Отримання книг, що збігаються за назвою та автором (з ігноруванням регістру)
-        const snapshot = await booksRef.get();
-
+        //const snapshot = await booksRef.get();
+        const snapshot = await booksRef
+            .where("title", "==", titleQuery)
+            .where("author", "==", authorQuery)
+            .get();
 
         const matchedBooks = snapshot.docs
-            .map(doc => ({ id: doc.id, ...(doc.data() as Book) })) // Явно вказуємо, що doc.data() має тип Book
-            .filter(book =>
+            .map(doc => ({ id: doc.id, ...(doc.data() as Book) })) 
+            /*.filter(book =>
                 book.title && book.author &&
                 String(book.title).toLowerCase().trim() === titleQuery &&
                 String(book.author).toLowerCase().trim() === authorQuery
-            );
+            );*/
+
+
 
         res.status(200).json(matchedBooks);
     } catch (error) {

@@ -8,10 +8,11 @@ import 'package:rxdart/rxdart.dart';
 class BooksFirebaseRepository {
   final FirebaseFirestore firestore;
   final Box<Book> bookBox;
+  final String postfix;
 
   final BehaviorSubject<List<Book>> _booksController = BehaviorSubject.seeded([]);
 
-  BooksFirebaseRepository(this.firestore, this.bookBox) {
+  BooksFirebaseRepository(this.firestore, this.bookBox, {this.postfix = ''}) {
     _loadCachedBooks();
     _listenToFirestore();
   }
@@ -25,7 +26,9 @@ class BooksFirebaseRepository {
   }
 
   void _listenToFirestore() {
-    firestore.collection("books-dev").snapshots().listen((snapshot) {
+    final bookRepo = "books-$postfix";
+    print("bookRepo: $bookRepo");
+    firestore.collection(bookRepo).snapshots().listen((snapshot) {
       if (snapshot.metadata.isFromCache && !snapshot.metadata.hasPendingWrites) {
         return;
       }

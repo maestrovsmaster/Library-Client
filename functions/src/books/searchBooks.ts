@@ -17,8 +17,9 @@ export const searchBooks = functions.https.onRequest(async (req, res) => {
         typeof query === "string" ? query.toLowerCase().trim() : 
         Array.isArray(query) && typeof query[0] === "string" ? query[0].toLowerCase().trim() : 
         "";
-    
-        const booksRef = admin.firestore().collection("books");
+        const postfix = req.query.postfix as string | undefined;
+        const collectionName = `books${postfix ? '-' + postfix : ''}`;
+        const booksRef = admin.firestore().collection(collectionName);
 
         // 1. Шукаємо в полі `title`
         const titleSnapshot = await booksRef

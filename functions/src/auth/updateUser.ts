@@ -11,12 +11,16 @@ if (!admin.apps.length) {
 }
 
 const firestore = admin.firestore();
-const usersCollection = firestore.collection('Users');
+
 
 export const updateUser = functions.https.onRequest((req, res) => {
     handlePreflight(req, res, () => {
         corsHandler(req, res, async () => {
             try {
+              
+
+               
+
                  const authorization = req.headers.authorization;
                                 if (!authorization || !authorization.startsWith('Bearer ')) {
                                     throw new functions.https.HttpsError('unauthenticated', 'Токен відсутній або неправильний.');
@@ -44,6 +48,9 @@ export const updateUser = functions.https.onRequest((req, res) => {
                     });
                 }
 
+                const postfix = req.query.postfix as string | undefined;
+                const collectionName = `users${postfix ? '-' + postfix : ''}`;
+                const usersCollection = firestore.collection(collectionName);
                 const userRef = usersCollection.doc(userId);
                 const userDoc = await userRef.get();
 

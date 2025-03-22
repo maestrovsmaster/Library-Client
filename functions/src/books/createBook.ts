@@ -9,6 +9,7 @@ export const createBook = functions.https.onRequest(async (req, res) => {
 
         if (!title || !author || !genre) {
              res.status(400).json({ message: "Missing required fields" });
+             return;
         }
 
         const newBook = {
@@ -24,7 +25,9 @@ export const createBook = functions.https.onRequest(async (req, res) => {
             updatedAt: Timestamp.now(),
         };
 
-        const bookRef = await admin.firestore().collection('books').add(newBook);
+        const postfix = req.query.postfix as string | undefined;
+        const collectionName = `books${postfix ? '-' + postfix : ''}`;
+        const bookRef = await admin.firestore().collection(collectionName).add(newBook);
 
          res.status(201).json({ id: bookRef.id, ...newBook });
     } catch (error) {

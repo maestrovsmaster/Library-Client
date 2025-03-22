@@ -7,6 +7,7 @@ import 'package:leeds_library/presentation/block/main_screen/main_screen_block.d
 import 'package:leeds_library/presentation/block/main_screen/main_screen_event.dart';
 import 'package:leeds_library/presentation/block/main_screen/main_screen_state.dart';
 import 'package:leeds_library/presentation/navigation/app_router.dart';
+import 'package:leeds_library/presentation/screens/account_screen/account_screen.dart';
 import 'package:leeds_library/presentation/screens/barcode_scanner_screen/barcode_scanner_screen.dart';
 import 'package:leeds_library/presentation/screens/books_list/books_list_screen.dart';
 import 'package:leeds_library/presentation/screens/placeholder_screen/placeholder_screen.dart';
@@ -97,7 +98,7 @@ class MainScreen extends StatelessWidget {
       case 2:
         return PlaceholderScreen(title: translate('tab_shop'));
       case 3:
-        return PlaceholderScreen(title: translate('tab_settings'));
+        return AccountScreen();
       default:
         return Container();
     }

@@ -28,13 +28,27 @@ export const verifyToken = functions.https.onRequest((req, res) => {
                 console.log("authorization uid = ", user_id);
 
                 // Check user in Firestore
-                const userRef = admin.firestore().collection('Users').doc(user_id);
+                const postfix = req.query.postfix as string | undefined;
+                const collectionNameUsers = `users${postfix ? '-' + postfix : ''}`;
+                const userRef = admin.firestore().collection(collectionNameUsers).doc(user_id);
                 const userDoc = await userRef.get();
+
+
+                let role = 'reader'; // default role
+                const collectionNameRoles = `roles${postfix ? '-' + postfix : ''}`;
+                const roleDoc = await admin.firestore().collection(collectionNameRoles).doc(user_id).get();
+                if (roleDoc.exists && roleDoc.data()?.role) {
+                  role = roleDoc.data()!.role;
+                }
+
 
                 let userData;
 
                 if (userDoc.exists) {
                     userData = userDoc.data();
+                    if (userData) {
+                        userData.role = role;
+                      }
                 } else {
                     userData = {
                         user_id,
@@ -43,7 +57,8 @@ export const verifyToken = functions.https.onRequest((req, res) => {
                         name: null,
                         phoneNumber: null,
                         phoneNumberAlt: null,
-                        role: null, // Нові користувачі за замовчуванням не є адміністраторами
+                        photoUrl: decodedToken.picture,
+                        role: role, // Нові користувачі за замовчуванням не є адміністраторами
                         createdAt: timestamp,
                     };
 
@@ -51,7 +66,8 @@ export const verifyToken = functions.https.onRequest((req, res) => {
                 }
 
                 // Перевіряємо статус "isBanned" (якщо потрібно)
-                const banRef = admin.firestore().collection('UserBans').doc(user_id);
+                const collectionName = `userBans${postfix ? '-' + postfix : ''}`;
+                const banRef = admin.firestore().collection(collectionName).doc(user_id);
                 const banDoc = await banRef.get();
 
                 if (banDoc.exists) {
