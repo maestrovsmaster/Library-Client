@@ -17,6 +17,7 @@ import 'presentation/app/my_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final envConfig = await _initEnv();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -31,7 +32,7 @@ Future<void> main() async {
   await _initHive();
 
   // Load environment variables and determine mock data source
-  final envConfig = await _initEnv();
+
   if (envConfig.useFirestoreEmulator == 'true') {
     await _connectToFirebaseEmulator();
   }
