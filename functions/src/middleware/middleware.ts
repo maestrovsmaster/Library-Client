@@ -9,11 +9,14 @@ export const checkAuthAndRole = async (req: functions.https.Request) => {
   }
 
   const idToken = authHeader.split('Bearer ')[1];
+  //console.error(">idToken=",idToken);
   const decodedToken = await admin.auth().verifyIdToken(idToken);
   const userId = decodedToken.uid;
-
-  const roleDoc = await admin.firestore().collection('roles').doc(userId).get();
-
+  console.error(">userId=",userId);
+  const postfix = req.query.postfix as string | undefined;
+  const collectionName = `roles${postfix ? '-' + postfix : ''}`;
+  const roleDoc = await admin.firestore().collection(collectionName).doc(userId).get();
+  console.error(">roleDoc=",roleDoc);
   if (!roleDoc.exists) {
     throw new Error('Forbidden: No role assigned');
   }

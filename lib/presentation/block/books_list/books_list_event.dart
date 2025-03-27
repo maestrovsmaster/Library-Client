@@ -19,3 +19,14 @@ class SearchQueryChangedEvent extends BooksListEvent {
   @override
   List<Object> get props => [query];
 }
+
+
+class UpdateBarcode extends BooksListEvent {
+  final String id;
+  final String code;
+
+  const UpdateBarcode(this.id, this.code);
+
+  //@override
+  //List<Object?> get props => [code];
+}

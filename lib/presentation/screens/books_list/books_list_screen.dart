@@ -92,7 +92,24 @@ class BooksListScreen extends StatelessWidget {
                               book: books[index],
                               onTap: (book) {
                                 // context.read<BooksListBloc>().add(BookSelectedEvent(book));
-                              }),
+                              },
+                             onScanTap: (book) async{
+                                //context.read<BooksListBloc>().add(BookSelectedEvent(book));
+                               final result = await showDialog<String>(
+                                 context: context,
+                                 builder: (_) => const BarcodeScannerDialog(),
+                               );
+
+                               if (result != null) {
+                                 //_searchController.value = TextEditingValue(text: result);
+                                // context.read<BooksListBloc>().add(SearchQueryChangedEvent(result));
+
+                                 context.read<BooksListBloc>().add(UpdateBarcode(book.id, result));
+
+                               }
+                             },
+
+                              ),
                         );
                 },
               );

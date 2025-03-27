@@ -84,4 +84,28 @@ class BooksRepository{
     }
   }
 
+  Future<Result<Book?, String>> updateBookBarcode(String bookId, String barcode) async {
+    try {
+      final response = await _dio.put(
+        '/books-updateBookBarcode',
+        data: {
+          'id': bookId,
+          'barcode': barcode,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      print("updateBook response = ${response.data}");
+
+      if (response.statusCode == 200 && response.data != null) {
+        return Result.success(Book.fromJson(response.data));
+      } else {
+        return Result.failure("Server returned an error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print('Error updating book: $e');
+      return Result.failure("Network error: $e");
+    }
+  }
+
 }

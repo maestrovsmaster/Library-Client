@@ -43,3 +43,4 @@ class ServerError extends BarcodeScannerState {
   @override
   List<Object?> get props => [error];
 }
+

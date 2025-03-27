@@ -19,13 +19,14 @@ import 'package:leeds_library/presentation/block/user_google_auth/google_auth_bl
 import 'package:leeds_library/presentation/block/user_register/register_block.dart';
 import 'package:leeds_library/presentation/block/welcome/welcome_block.dart';
 
-
 final sl = GetIt.instance;
 
 /// Initialize the dependency injection container.
 /// assets - mock data from assets
 /// generator - mock data from generator
-Future<void> init({String baseUrl = 'http://192.168.0.25:5001/library-541e4/us-central1', String postfix = ''}) async {
+Future<void> init(
+    {String baseUrl = 'http://192.168.0.25:5001/library-541e4/us-central1',
+    String postfix = ''}) async {
   final itemBox = await Hive.openBox<Book>('books');
   sl.registerLazySingleton<Box<Book>>(() => itemBox);
 
@@ -36,32 +37,40 @@ Future<void> init({String baseUrl = 'http://192.168.0.25:5001/library-541e4/us-c
 
   sl.registerLazySingleton(() => authInterceptor);
   dio.interceptors.add(authInterceptor);
-  dio.options.baseUrl = baseUrl; //"http://192.168.0.25:5001/library-541e4/us-central1";
+  dio.options.baseUrl =
+      baseUrl; //"http://192.168.0.25:5001/library-541e4/us-central1";
   sl.registerLazySingleton(() => dio);
 
   sl.registerLazySingleton(() => UserCubit());
 
-  sl.registerLazySingleton(() => SignInRepository(sl<Dio>(), sl<UserCubit>(), sl<AuthInterceptor>()));
+  sl.registerLazySingleton(() =>
+      SignInRepository(sl<Dio>(), sl<UserCubit>(), sl<AuthInterceptor>()));
   sl.registerLazySingleton(() => BooksRepository(sl<Dio>()));
 
-  sl.registerLazySingleton(() => BooksFirebaseRepository(firebase, itemBox, postfix: postfix));
+  sl.registerLazySingleton(
+      () => BooksFirebaseRepository(firebase, itemBox, postfix: postfix));
 
-  sl.registerFactory(() => WelcomeBloc(repository: sl<SignInRepository>(), userCubit: sl<UserCubit>(), authInterceptor: sl<AuthInterceptor>()));
+  sl.registerFactory(() => WelcomeBloc(
+      repository: sl<SignInRepository>(),
+      userCubit: sl<UserCubit>(),
+      authInterceptor: sl<AuthInterceptor>()));
 
-  sl.registerFactory(() => GoogleAuthBloc(sl<AuthInterceptor>(),
-      sl<SignInRepository>()));
+  sl.registerFactory(
+      () => GoogleAuthBloc(sl<AuthInterceptor>(), sl<SignInRepository>()));
 
+  sl.registerFactory(() => RegisterBloc(repository: sl<SignInRepository>()));
 
-  sl.registerFactory(() => RegisterBloc(repository:sl<SignInRepository>()));
+  sl.registerFactory(() => AccountBloc(
+      userCubit: sl<UserCubit>(), signInRepository: sl<SignInRepository>()));
 
-  sl.registerFactory(() => AccountBloc(userCubit: sl<UserCubit>(), signInRepository: sl<SignInRepository>()));
-
-  sl.registerFactory(()=> BarcodeScannerBloc(booksRepository: sl<BooksRepository>()));
+  sl.registerFactory(
+      () => BarcodeScannerBloc(booksRepository: sl<BooksRepository>()));
   sl.registerFactory(() => AddBookBloc(sl<BooksRepository>()));
   sl.registerFactory(() => TextRecognizerBloc());
 
-
   sl.registerFactory(() => MainScreenBloc(repository: sl<SignInRepository>()));
 
-  sl.registerFactory(() => BooksListBloc(booksRepository: sl<BooksFirebaseRepository>()));
+  sl.registerFactory(() => BooksListBloc(
+      booksRepository: sl<BooksRepository>(),
+      booksFirebaseRepository: sl<BooksFirebaseRepository>()));
 }

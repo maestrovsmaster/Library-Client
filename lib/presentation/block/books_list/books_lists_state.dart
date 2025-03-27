@@ -31,3 +31,5 @@ class BooksErrorState extends BooksListState {
   @override
   List<Object> get props => [message];
 }
+
+class BarcodeUpdated extends BooksListState {}

@@ -5,6 +5,7 @@ import { createBook } from './createBook';
 import { updateBook } from './updateBook';
 import { searchBooks } from './searchBooks';
 import { checkExistingBook } from './checkExistingBook';
+import { updateBookBarcode } from './updateBookBarcode';
 
 
 if (!admin.apps.length) {
@@ -17,4 +18,5 @@ export const books = {
     updateBook: functions.https.onRequest(updateBook),
     searchBooks: functions.https.onRequest(searchBooks),
     checkExistingBook: functions.https.onRequest(checkExistingBook),
+    updateBookBarcode: functions.https.onRequest(updateBookBarcode),
 };
