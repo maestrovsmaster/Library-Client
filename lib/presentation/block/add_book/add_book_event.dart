@@ -12,6 +12,7 @@ class SubmitBookEvent extends AddBookEvent {
   final String genre;
   final String publisher;
   final String barcode;
+  final String? description;
   final File? imageFile;
 
   SubmitBookEvent({
@@ -20,6 +21,7 @@ class SubmitBookEvent extends AddBookEvent {
     required this.genre,
     required this.publisher,
     required this.barcode,
+    this.description,
     this.imageFile,
   });
 }

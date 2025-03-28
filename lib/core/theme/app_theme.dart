@@ -99,6 +99,21 @@ class AppTheme {
         ),
 
       ),
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: TextStyle(
+          color: AppColors.secondaryText,
+        ),
+        floatingLabelStyle: TextStyle(
+          color: AppColors.accentColor, // або primaryText — як краще видно
+          fontWeight: FontWeight.w500,
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.secondaryText),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.accentColor),
+        ),
+      ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: Colors.blue, // Колір індикатора по всій апці
       ),

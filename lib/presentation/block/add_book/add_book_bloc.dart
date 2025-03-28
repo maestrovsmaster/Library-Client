@@ -9,8 +9,6 @@ import 'package:leeds_library/domain/repositories/books_repository.dart';
 import 'add_book_event.dart';
 import 'add_book_state.dart';
 
-
-
 class AddBookBloc extends Bloc<AddBookEvent, AddBookState> {
   final BooksRepository _bookApiService;
   final ImagePicker _picker = ImagePicker();
@@ -20,7 +18,8 @@ class AddBookBloc extends Bloc<AddBookEvent, AddBookState> {
     on<PickImageEvent>(_onPickImage);
   }
 
-  Future<void> _onSubmitBook(SubmitBookEvent event, Emitter<AddBookState> emit) async {
+  Future<void> _onSubmitBook(
+      SubmitBookEvent event, Emitter<AddBookState> emit) async {
     emit(AddBookLoading());
 
     try {
@@ -35,7 +34,7 @@ class AddBookBloc extends Bloc<AddBookEvent, AddBookState> {
         author: event.author,
         genre: event.genre,
         publisher: event.publisher,
-        description: "",
+        description: event.description ?? "",
         imageUrl: imageUrl ?? "",
         barcode: event.barcode,
         isAvailable: true,
@@ -53,7 +52,8 @@ class AddBookBloc extends Bloc<AddBookEvent, AddBookState> {
     }
   }
 
-  Future<void> _onPickImage(PickImageEvent event, Emitter<AddBookState> emit) async {
+  Future<void> _onPickImage(
+      PickImageEvent event, Emitter<AddBookState> emit) async {
     final pickedFile = await _picker.pickImage(source: event.source);
     if (pickedFile != null) {
       emit(AddBookImagePicked(File(pickedFile.path)));
@@ -61,9 +61,10 @@ class AddBookBloc extends Bloc<AddBookEvent, AddBookState> {
   }
 
   Future<String> _uploadImageToStorage(File image) async {
-    final ref = FirebaseStorage.instance.ref().child("book_images/${DateTime.now().millisecondsSinceEpoch}.jpg");
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child("book_images/${DateTime.now().millisecondsSinceEpoch}.jpg");
     await ref.putFile(image);
     return await ref.getDownloadURL();
   }
 }
-

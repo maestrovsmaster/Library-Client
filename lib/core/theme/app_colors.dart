@@ -7,6 +7,7 @@ class AppColors {
   static const Color background = Color(0xFFFAFAF5);
   static const Color backgroundBottleDetails = Color(0xFFF8F9FA);
   static const Color cardBackground = Color(0xFFF5F8FA);
+  static const Color cardBackground2 = Color(0xFFE0E2E4);
   static const Color accentColor = Color(0xFFD49A00);
   static const Color white = Color(0xFFFFFFFF);
   static const Color primaryText = Color(0xFF222529);

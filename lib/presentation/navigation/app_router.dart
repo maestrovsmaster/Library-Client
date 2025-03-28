@@ -1,6 +1,9 @@
 import 'package:go_router/go_router.dart';
 import 'package:leeds_library/data/models/app_user.dart';
+import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/presentation/screens/add_book_screen/add_book_screen.dart';
+import 'package:leeds_library/presentation/screens/add_reader_screen/add_reader_screen.dart';
+import 'package:leeds_library/presentation/screens/create_loan_screen/create_loan_screen.dart';
 import 'package:leeds_library/presentation/screens/main_screen/main_screen.dart';
 import 'package:leeds_library/presentation/screens/register_user_screen/register_screen.dart';
 import 'package:leeds_library/presentation/screens/sign_in_google_screen/google_sign_in_screen.dart';
@@ -16,6 +19,8 @@ class AppRoutes {
   static const String main = '/main';
   static const String details = '/details';
   static const String addBook = '/addBook';
+  static const String addReader = '/addReader';
+  static const String createLoan = '/createLoan';
 }
 
 class AppRouter {
@@ -57,6 +62,26 @@ class AppRouter {
             final barcode = state.extra as String?;
             return  CustomTransitionPage(
               child: AddBookScreen(barcode: barcode),
+              transitionsBuilder: slideTransition,
+            );
+          }),
+
+      GoRoute(
+          path: AppRoutes.addReader,
+          pageBuilder: (context, state) {
+            final name = state.extra as String?;
+            return  CustomTransitionPage(
+              child: AddReaderScreen(name: name),
+              transitionsBuilder: slideTransition,
+            );
+          }),
+
+      GoRoute(
+          path: AppRoutes.createLoan,
+          pageBuilder: (context, state) {
+            final book = state.extra as Book?;
+            return  CustomTransitionPage(
+              child: CreateLoanScreen(book: book!),
               transitionsBuilder: slideTransition,
             );
           }),

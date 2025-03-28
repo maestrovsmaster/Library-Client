@@ -16,3 +16,4 @@ export {
 };
 
 export * from './books';
+export * from './readers';

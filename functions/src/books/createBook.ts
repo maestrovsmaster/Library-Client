@@ -16,7 +16,7 @@ export const createBook = functions.https.onRequest(async (req, res) => {
             title,
             author,
             genre,
-            barcode: barcode || null, // може бути null
+            barcode: barcode || null, 
             imageUrl: imageUrl || null,
             publisher: publisher || null,
             description: description || null,

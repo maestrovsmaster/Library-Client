@@ -17,3 +17,7 @@ int calculateItemAge(int releaseYear) {
 String formatDateToEnglishString(DateTime dateTime) {
   return DateFormat('MMMM d, yyyy', 'en_US').format(dateTime);
 }
+
+bool isNumeric(String text) {
+  return double.tryParse(text) != null;
+}

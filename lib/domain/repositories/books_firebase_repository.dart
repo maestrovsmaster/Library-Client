@@ -10,7 +10,8 @@ class BooksFirebaseRepository {
   final Box<Book> bookBox;
   final String postfix;
 
-  final BehaviorSubject<List<Book>> _booksController = BehaviorSubject.seeded([]);
+  final BehaviorSubject<List<Book>> _booksController =
+      BehaviorSubject.seeded([]);
 
   BooksFirebaseRepository(this.firestore, this.bookBox, {this.postfix = ''}) {
     _loadCachedBooks();
@@ -29,7 +30,8 @@ class BooksFirebaseRepository {
     final bookRepo = "books-$postfix";
     print("bookRepo: $bookRepo");
     firestore.collection(bookRepo).snapshots().listen((snapshot) {
-      if (snapshot.metadata.isFromCache && !snapshot.metadata.hasPendingWrites) {
+      if (snapshot.metadata.isFromCache &&
+          !snapshot.metadata.hasPendingWrites) {
         return;
       }
       bool hasChanges = false;
@@ -43,14 +45,14 @@ class BooksFirebaseRepository {
             books.add(book);
             hasChanges = true;
           }
-        }
-        else if (change.type == DocumentChangeType.removed) {
+        } else if (change.type == DocumentChangeType.removed) {
           books.removeWhere((b) => b.id == book.id);
           hasChanges = true;
-        }
-        else if (change.type == DocumentChangeType.modified) {
+        } else if (change.type == DocumentChangeType.modified) {
           var index = books.indexWhere((b) => b.id == book.id);
-          if (index != -1 && books[index].barcode != book.barcode) {
+          if (index != -1 &&
+              (books[index].barcode != book.barcode ||
+                  books[index].isAvailable != book.isAvailable)) {
             books[index] = book;
             hasChanges = true;
           }
@@ -68,6 +70,4 @@ class BooksFirebaseRepository {
     await bookBox.clear();
     await bookBox.addAll(books);
   }
-
-
 }

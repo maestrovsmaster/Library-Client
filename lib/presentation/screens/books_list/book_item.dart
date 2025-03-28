@@ -13,7 +13,8 @@ class BookItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return InkWell( onTap: () => onTap(book),
+      child: SizedBox(
         height: 146,
         child: Padding(
           padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
@@ -81,6 +82,6 @@ class BookItem extends StatelessWidget {
               ),
             )
           ]),
-        ));
+        )));
   }
 }
