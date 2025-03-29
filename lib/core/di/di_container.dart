@@ -7,6 +7,7 @@ import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/data/net/global_interceptor.dart';
 import 'package:leeds_library/domain/repositories/books_firebase_repository.dart';
 import 'package:leeds_library/domain/repositories/books_repository.dart';
+import 'package:leeds_library/domain/repositories/loans_repository.dart';
 import 'package:leeds_library/domain/repositories/readers_repository.dart';
 import 'package:leeds_library/domain/repositories/sign_in_repository.dart';
 import 'package:leeds_library/presentation/block/account/account_block.dart';
@@ -16,6 +17,7 @@ import 'package:leeds_library/presentation/block/barcode_scanner/barcode_scanner
 import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
 import 'package:leeds_library/presentation/block/create_loan/create_loan_bloc.dart';
 import 'package:leeds_library/presentation/block/finder_bloc/finder_bloc.dart';
+import 'package:leeds_library/presentation/block/loans_list/loans_list_bloc.dart';
 import 'package:leeds_library/presentation/block/main_screen/main_screen_block.dart';
 import 'package:leeds_library/presentation/block/text_recognize/text_recognize_block.dart';
 import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
@@ -51,7 +53,10 @@ Future<void> init(
       SignInRepository(sl<Dio>(), sl<UserCubit>(), sl<AuthInterceptor>()));
 
   sl.registerLazySingleton(() => BooksRepository(sl<Dio>()));
-  sl.registerLazySingleton(() => ReadersRepository(sl<Dio>(), firebase, postfix: postfix));
+  sl.registerLazySingleton(
+      () => ReadersRepository(sl<Dio>(), firebase, postfix: postfix));
+  sl.registerLazySingleton(
+      () => LoansRepository(sl<Dio>(), firebase, postfix: postfix));
 
   sl.registerLazySingleton(
       () => BooksFirebaseRepository(firebase, itemBox, postfix: postfix));
@@ -82,13 +87,13 @@ Future<void> init(
 
   sl.registerFactory(() => FinderBloc(
       booksRepository: sl<BooksRepository>(),
-      booksFirebaseRepository: sl<BooksFirebaseRepository>()));
+      booksFirebaseRepository: sl<BooksFirebaseRepository>(),
+      loansRepository: sl<LoansRepository>()));
 
-  sl.registerFactory(() => AddReaderBloc(
-      sl<ReadersRepository>()));
+  sl.registerFactory(() => AddReaderBloc(sl<ReadersRepository>()));
 
-  sl.registerFactory(() => CreateLoanBloc(
-      sl<ReadersRepository>()));
+  sl.registerFactory(
+      () => CreateLoanBloc(sl<ReadersRepository>(), sl<LoansRepository>()));
 
-
+  sl.registerFactory(() => LoansListBloc(repository: sl<LoansRepository>()));
 }

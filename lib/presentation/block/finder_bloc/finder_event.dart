@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:leeds_library/data/models/book.dart';
 
 abstract class FinderEvent extends Equatable {
   const FinderEvent();
@@ -18,4 +19,9 @@ class FinderSearchQueryChangedEvent extends FinderEvent {
 
   @override
   List<Object> get props => [query];
+}
+
+class ReturnBookEventEvent extends FinderEvent {
+  final Book book;
+  const ReturnBookEventEvent(this.book);
 }

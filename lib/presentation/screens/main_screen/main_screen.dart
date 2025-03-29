@@ -11,6 +11,7 @@ import 'package:leeds_library/presentation/screens/account_screen/account_screen
 import 'package:leeds_library/presentation/screens/barcode_scanner_screen/barcode_scanner_screen.dart';
 import 'package:leeds_library/presentation/screens/books_list/books_list_screen.dart';
 import 'package:leeds_library/presentation/screens/finder_screen/finder_screen.dart';
+import 'package:leeds_library/presentation/screens/loans_list_screen/loans_list_screen.dart';
 import 'package:leeds_library/presentation/screens/placeholder_screen/placeholder_screen.dart';
 import 'package:leeds_library/presentation/screens/text_recognize_screen.dart';
 import 'package:leeds_library/presentation/widgets/confirm_dialog.dart';
@@ -97,7 +98,7 @@ class MainScreen extends StatelessWidget {
       case 1:
         return  BooksListScreen();//PlaceholderScreen(title: translate('tab_main')); //const CollectionsListScreen();
       case 2:
-        return PlaceholderScreen(title: translate('tab_shop'));
+        return LoansListScreen();
       case 3:
         return AccountScreen();
       default:

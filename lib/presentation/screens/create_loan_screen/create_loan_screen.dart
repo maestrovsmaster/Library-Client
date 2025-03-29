@@ -11,6 +11,7 @@ import 'package:leeds_library/presentation/block/create_loan/create_loan_state.d
 import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:leeds_library/presentation/screens/add_reader_screen/add_reader_screen.dart';
 import 'package:leeds_library/presentation/screens/books_list/book_item.dart';
+import 'package:leeds_library/presentation/widgets/book_widget.dart';
 import 'package:leeds_library/presentation/widgets/reader_widget.dart';
 
 class CreateLoanScreen extends StatelessWidget {
@@ -34,7 +35,7 @@ class CreateLoanScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BookItem(book: book, onTap: (_) {}, onScanTap: (_) {}),
+                  BookWidget(book: book, onTap: (_) {}),
                   const SizedBox(height: 24),
                   if(state is CreateLoanInitial|| state is CreateLoanReadersFound || state is CreateLoanLoading)
                   StatefulBuilder(
@@ -114,7 +115,7 @@ class CreateLoanScreen extends StatelessWidget {
                         )
                       ],
                     ),
-                  if(state is SelectReaderState)
+                  if(state is SelectReaderState )
                     Column(children: [
                       ReaderWidget(
                         reader: state.reader,
@@ -124,8 +125,36 @@ class CreateLoanScreen extends StatelessWidget {
                         },
                       ),
 
+                      SizedBox(height: 12),
+
+                      ElevatedButton(
+                        onPressed: () async {
+                        //call block event create Loan
+                          context.read<CreateLoanBloc>().add(AddLoanEvent(book, state.reader));
+                        },
+                        child: Text("Забронювати"),
+                      )
+
+
+                    ],),
+
+                  if(state is CreateLoanFailure)
+                    Text(state.error),
+
+                  if(state is CreateLoanSuccess)
+                    Column(children: [
+                      Text("Видачу заброньовано", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green)),
+                      SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () async {
+                          //Close screen
+                          context.pop();
+                        },
+                        child: Text("Закрити"),
+                      )
 
                     ],)
+
 
                 ],
               ),

@@ -32,3 +32,7 @@ class BooksErrorState extends FinderState {
   List<Object> get props => [message];
 }
 
+class SuccessReturnBookState extends FinderState {
+  const SuccessReturnBookState();
+}
+

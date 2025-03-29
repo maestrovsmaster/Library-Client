@@ -76,7 +76,7 @@ class Book {
   factory Book.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>?; // Конвертуємо Firestore-документ у Map
     if (data == null) {
-      throw Exception("Документ не містить даних");
+      throw Exception("Document doesn't contain data");
     }
 
     return Book(

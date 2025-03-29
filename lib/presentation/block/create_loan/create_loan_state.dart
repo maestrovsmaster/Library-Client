@@ -20,3 +20,5 @@ class CreateLoanFailure extends CreateLoanState {
   final String error;
   CreateLoanFailure(this.error);
 }
+
+class CreateLoanSuccess extends CreateLoanState {}

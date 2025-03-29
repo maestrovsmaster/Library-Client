@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/domain/repositories/books_firebase_repository.dart';
 import 'package:leeds_library/domain/repositories/books_repository.dart';
+import 'package:leeds_library/domain/repositories/loans_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'finder_event.dart';
@@ -11,15 +12,17 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
   final BooksFirebaseRepository booksFirebaseRepository;
   final BooksRepository booksRepository;
   final _filteredBooksController = BehaviorSubject<List<Book>>();
+  final LoansRepository loansRepository;
 
   List<Book> _allBooks = [];
   String _currentQuery = '';
 
   Stream<List<Book>> get filteredBooksStream => _filteredBooksController.stream;
 
-  FinderBloc({required this.booksRepository, required this.booksFirebaseRepository}) : super(BooksInitialState()) {
+  FinderBloc({required this.booksRepository, required this.booksFirebaseRepository, required this.loansRepository}) : super(BooksInitialState()) {
     on<FinderLoadBooksEvent>(_onLoadBooks);
     on<FinderSearchQueryChangedEvent>(_onSearchQueryChanged);
+    on<ReturnBookEventEvent>(_onReturnBook);
   }
 
   Future<void> _onLoadBooks(FinderLoadBooksEvent event, Emitter<FinderState> emit) async {
@@ -62,6 +65,16 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
     }).toList();
 
     _filteredBooksController.add(filtered);
+  }
+  
+  Future<void> _onReturnBook(ReturnBookEventEvent event, Emitter<FinderState> emit) async {
+    try {
+      final book = event.book;
+      final loan = await loansRepository.closeLoan(bookId: book.id);
+      emit(SuccessReturnBookState());
+    }catch(e){
+      emit(BooksErrorState("Не вдалося повернути книгу"));
+    }
   }
 
   @override

@@ -11,6 +11,7 @@ import 'package:leeds_library/presentation/block/finder_bloc/finser_state.dart';
 import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:leeds_library/presentation/screens/books_list/book_item.dart';
 import 'package:leeds_library/presentation/widgets/barcode_scanner_dialog/barcode_scanner_dialog.dart';
+import 'package:leeds_library/presentation/widgets/book_for_loan_widget.dart';
 
 class FinderScreen extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
@@ -136,28 +137,18 @@ class FinderScreen extends StatelessWidget {
                                             height: 0.5,
                                             color: Colors.grey[300]),
                                     itemCount: books.length,
-                                    itemBuilder: (context, index) => BookItem(
+                                    itemBuilder: (context, index) => BookForLoanWidget(
                                       book: books[index],
-                                      onTap: (book) {
+                                      onBook: (book) {
                                         // context.read<BooksListBloc>().add(BookSelectedEvent(book));
                                         print("-------book.id = ${book.id}");
                                         context.push(AppRoutes.createLoan,
                                             extra: book);
                                       },
-                                      onScanTap: (book) async {
-                                        //context.read<BooksListBloc>().add(BookSelectedEvent(book));
-                                        /*final result = await showDialog<String>(
-                                      context: context,
-                                      builder: (_) =>
-                                          const BarcodeScannerDialog(),
-                                    );
+                                      onReturn: (book) async {
+                                        //bloc return book event
+                                        context.read<FinderBloc>().add(ReturnBookEventEvent(book));
 
-                                    if (result != null) {
-                                      //_searchController.value = TextEditingValue(text: result);
-                                      // context.read<BooksListBloc>().add(SearchQueryChangedEvent(result));
-
-                                      //   context.read<BooksListBloc>().add(UpdateBarcode(book.id, result));
-                                    }*/
                                       },
                                     ),
                                   );
@@ -165,7 +156,10 @@ class FinderScreen extends StatelessWidget {
                     ));
                   } else if (state is BooksErrorState) {
                     return Center(child: Text(state.message));
-                  } else {
+                  } else if (state is SuccessReturnBookState) {
+                    return Center(child: Text("Книга повернена"));
+                  }
+                  {
                     return Center(child: CircularProgressIndicator());
                   }
                 },
