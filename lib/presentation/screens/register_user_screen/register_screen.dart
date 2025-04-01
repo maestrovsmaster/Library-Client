@@ -22,6 +22,9 @@ class RegisterScreen extends StatelessWidget {
     final phoneController = TextEditingController(text: user.phoneNumber ?? '');
     final phoneAltController = TextEditingController(text: user.phoneNumberAlt ?? '');
 
+    final _phoneFocus = FocusNode();
+    final _phoneAltFocus = FocusNode();
+
     return BlocProvider(
       create: (context) => sl<GoogleAuthBloc>(),
       child: Scaffold(
@@ -33,19 +36,31 @@ class RegisterScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextField(
+                  TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(labelText: "Name"),
+                    textCapitalization: TextCapitalization.words,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_phoneFocus);
+                    },
                   ),
-                  TextField(
+                  TextFormField(
                     controller: phoneController,
                     decoration: InputDecoration(labelText: "Phone Number"),
                     keyboardType: TextInputType.phone,
+                    focusNode: _phoneFocus,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_phoneAltFocus);
+                    },
                   ),
-                  TextField(
+                  TextFormField(
                     controller: phoneAltController,
                     decoration: InputDecoration(labelText: "Alternate Phone (Optional)"),
                     keyboardType: TextInputType.phone,
+                    focusNode: _phoneAltFocus,
+
                   ),
                   SizedBox(height: 20),
                   BlocConsumer<RegisterBloc, RegisterState>(

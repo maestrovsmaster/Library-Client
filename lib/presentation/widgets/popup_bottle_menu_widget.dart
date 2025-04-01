@@ -5,22 +5,20 @@ import 'package:leeds_library/core/theme/app_colors.dart';
 import 'custom_menu_popup.dart';
 
 
-const bottleTypes = [
-  "Genuine Bottle (Unopened)",
-  "Re-sealed Bottle",
-  "Opened Bottle"
-];
+
 
 class PopupBottleMenuWidget extends StatelessWidget {
   final String title;
   final Function(String) onSelected;
   final bool isExpanded;
+  final List<String> items;
 
   const PopupBottleMenuWidget({
     super.key,
     required this.title,
     required this.onSelected,
     required this.isExpanded,
+    required this.items,
   });
 
   @override
@@ -32,7 +30,7 @@ class PopupBottleMenuWidget extends StatelessWidget {
           itemBuilder: (BuildContext context) => List.generate(
             3,
                 (index) => CustomPopupMenuItem(
-              text: bottleTypes[index],
+              text: items[index],
               value: "item${index + 1}",
                   onSelected: (value){
                     onSelected(value);

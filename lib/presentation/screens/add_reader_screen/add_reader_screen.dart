@@ -98,6 +98,7 @@ class _AddReaderScreenState extends State<AddReaderScreen> {
                         decoration: InputDecoration(labelText: "Альтернативний телефон"),
                         keyboardType: TextInputType.phone,
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        focusNode: _phoneAltFocus,
                       ),
                       const SizedBox(height: 24),
                       state is AddReaderLoading

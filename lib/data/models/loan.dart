@@ -70,7 +70,7 @@ class Loan {
       reader: Map<String, dynamic>.from(data['reader'] ?? {}),
       borrowedBy: data['borrowedBy'] ?? '',
       dateBorrowed: parseDate(data['dateBorrowed']),
-      dateReturned: data['dateReturned'] != null ? parseDate(data['dateReturned']) : null,
+      dateReturned: data['dateReturned'] != null && data['dateReturned'] != "" ? parseDate(data['dateReturned']) : null,
     );
   }
 

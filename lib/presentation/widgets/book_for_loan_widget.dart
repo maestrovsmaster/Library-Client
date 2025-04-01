@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:leeds_library/core/theme/app_colors.dart';
 import 'package:leeds_library/data/models/book.dart';
 
 class BookForLoanWidget extends StatelessWidget {
@@ -22,7 +23,7 @@ class BookForLoanWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Padding(
-            padding: const EdgeInsets.all(4),
+            padding:  EdgeInsets.all(4),
             child: InkWell(
                 onTap: () {},
                 child: SizedBox(
@@ -90,7 +91,7 @@ class BookForLoanWidget extends StatelessWidget {
                                           ? "Забронювати?"
                                           : "Повернути?",
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: AppColors.actionReturnColor,
                                         fontSize: 12,
                                       )),
                                 )),

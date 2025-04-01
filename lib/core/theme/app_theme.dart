@@ -15,7 +15,7 @@ class AppTheme {
       ),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: AppColors.accentColor,
-        selectionColor: AppColors.accentColor.withValues(alpha: 0.1),
+        selectionColor: AppColors.accentColor.withOpacity(0.1),
         selectionHandleColor: AppColors.accentColor,
       ),
       cardColor: AppColors.cardBackground,
@@ -23,7 +23,6 @@ class AppTheme {
         color: AppColors.cardBackground,
       ),
       textTheme: TextTheme(
-        //For Title
         displayLarge: GoogleFonts.literata(
           fontSize: 32,
           fontWeight: FontWeight.w500,
@@ -34,20 +33,16 @@ class AppTheme {
           fontWeight: FontWeight.bold,
           color: AppColors.primaryText,
         ),
-        //For Card Item title
         titleLarge: GoogleFonts.literata(
           fontSize: 22,
           fontWeight: FontWeight.w500,
           color: AppColors.primaryText,
         ),
-
-        //For item details keys
         bodyLarge: GoogleFonts.literata(
           fontSize: 16,
           fontWeight: FontWeight.w400,
           color: AppColors.primaryText,
         ),
-        //For Card Item subtitle
         bodyMedium: GoogleFonts.literata(
           fontSize: 12,
           fontWeight: FontWeight.w400,
@@ -67,11 +62,12 @@ class AppTheme {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
+        iconTheme: const IconThemeData(color: AppColors.primaryText),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.accentColor,
-          foregroundColor: AppColors.background,
+          foregroundColor: AppColors.white,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -82,6 +78,14 @@ class AppTheme {
           ),
         ),
       ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: AppColors.accentColor,
+        foregroundColor: AppColors.white,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.background,
         selectedItemColor: AppColors.tabActive,
@@ -90,21 +94,18 @@ class AppTheme {
         selectedLabelStyle: GoogleFonts.literata(
           fontSize: 12,
           fontWeight: FontWeight.w400,
-          color: AppColors.accentColor,
+          color: AppColors.tabActive,
         ),
         unselectedLabelStyle: GoogleFonts.literata(
           fontSize: 12,
           fontWeight: FontWeight.w400,
           color: AppColors.tabInactive,
         ),
-
       ),
       inputDecorationTheme: InputDecorationTheme(
-        labelStyle: TextStyle(
-          color: AppColors.secondaryText,
-        ),
+        labelStyle: TextStyle(color: AppColors.secondaryText),
         floatingLabelStyle: TextStyle(
-          color: AppColors.accentColor, // або primaryText — як краще видно
+          color: AppColors.accentColor,
           fontWeight: FontWeight.w500,
         ),
         enabledBorder: UnderlineInputBorder(
@@ -114,8 +115,8 @@ class AppTheme {
           borderSide: BorderSide(color: AppColors.accentColor),
         ),
       ),
-      progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: Colors.blue, // Колір індикатора по всій апці
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.accentColor,
       ),
     );
   }

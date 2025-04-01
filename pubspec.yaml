@@ -108,6 +108,7 @@ flutter:
     - assets/images/ic_down.svg
     - assets/images/ic_account.svg
     - assets/images/ic_barcode_scanner.svg
+    - assets/images/img_background.jpg
 
 
   uses-material-design: true

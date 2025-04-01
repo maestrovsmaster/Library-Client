@@ -13,6 +13,8 @@ class BooksFirebaseRepository {
   final BehaviorSubject<List<Book>> _booksController =
       BehaviorSubject.seeded([]);
 
+  final List<String> catetories = [];
+
   BooksFirebaseRepository(this.firestore, this.bookBox, {this.postfix = ''}) {
     _loadCachedBooks();
     _listenToFirestore();
@@ -27,7 +29,10 @@ class BooksFirebaseRepository {
   }
 
   void _listenToFirestore() {
-    final bookRepo = "books-$postfix";
+    final bookRepo = postfix.isEmpty?
+     "books":
+      "books-$postfix";
+
     print("bookRepo: $bookRepo");
     firestore.collection(bookRepo).snapshots().listen((snapshot) {
       if (snapshot.metadata.isFromCache &&
@@ -39,6 +44,11 @@ class BooksFirebaseRepository {
 
       for (var change in snapshot.docChanges) {
         var book = Book.fromFirestore(change.doc);
+
+        final category = book.genre;
+        if (!catetories.contains(category)) {
+          catetories.add(category);
+        }
 
         if (change.type == DocumentChangeType.added) {
           if (!books.any((b) => b.id == book.id)) {
@@ -58,6 +68,8 @@ class BooksFirebaseRepository {
           }
         }
       }
+
+
 
       if (hasChanges) {
         _booksController.add(books);

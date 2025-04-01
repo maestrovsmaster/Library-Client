@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:leeds_library/core/theme/app_colors.dart';
 import 'package:leeds_library/data/models/book.dart';
 
 class BookItem extends StatelessWidget {
@@ -45,17 +46,22 @@ class BookItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 8),
+                  SizedBox(height: 4),
                   Text(book.author),
                   SizedBox(height: 4),
                   Text(book.title,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(height: 8),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(book.genre, style: TextStyle(color: AppColors.actionReturnColor)),
+                  SizedBox(height: 4),
                   SizedBox(
-                    height: 12,
-                    width: 12,
+                    height: 10,
+                    width: 10,
                     child: book.barcode.isNotEmpty
-                        ? Icon(Icons.qr_code, color: Colors.green)
+                        ? Icon(Icons.qr_code, color: AppColors.actionReturnColor)
                         : Container(),
                   ),
                 ],

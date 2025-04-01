@@ -37,7 +37,7 @@ class ConfirmDialog extends StatelessWidget {
       content: Text(
         message,
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: AppColors.secondaryText2,
+          color: AppColors.secondaryText,
         ),
       ),
       actions: [
@@ -49,7 +49,7 @@ class ConfirmDialog extends StatelessWidget {
           child: Text(
             cancelText,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppColors.secondaryText2,
+              color: AppColors.secondaryText,
               fontWeight: FontWeight.w500,
             ),
           ),

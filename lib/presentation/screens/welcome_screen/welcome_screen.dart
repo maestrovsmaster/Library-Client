@@ -31,25 +31,27 @@ class WelcomeScreenState extends State<WelcomeScreen>
         body: Stack(
           children: [
             Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/img_background.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+            ),
+            Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      AppColors.accentColor,
-                      AppColors.backgroundDetails,
+                      Color(0x27393733),
+                      Color(0x6CFFFFFF),
+                      Color(0x27393733),
+                      Color(0xC2151004),
                     ],
                   )),
-              child: Center(
-                  child: Transform.translate(
-                    offset: Offset(0, -40),
 
-                    child: SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: Image.asset('assets/images/lib_logo.png'),
-                    ),
-                  )),
             ),
             BlocListener<WelcomeBloc, WelcomeState>(
               listener: (context, state) {
@@ -103,7 +105,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                                   },
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -113,7 +115,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                                         .textTheme
                                         .bodyLarge
                                         ?.copyWith(
-                                      color: AppColors.secondaryText2,
+                                      color: AppColors.secondaryText,
                                     ),
                                   ),
                                   TextButton(
@@ -126,7 +128,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                                           .textTheme
                                           .headlineMedium
                                           ?.copyWith(
-                                        color: AppColors.accentColor,
+                                        color: AppColors.actionReturnColor,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                       ),

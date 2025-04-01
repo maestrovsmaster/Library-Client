@@ -20,21 +20,26 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
   Stream<List<Book>> get filteredBooksStream => _filteredBooksController.stream;
 
   FinderBloc({required this.booksRepository, required this.booksFirebaseRepository, required this.loansRepository}) : super(BooksInitialState()) {
+    print("ADSFSDFSFSDFSDFSDfsdf ==============================================================FinderBlocFinderBlocFinderBlocFinderBlocFinderBlocFinderBlocFinderBloc");
     on<FinderLoadBooksEvent>(_onLoadBooks);
     on<FinderSearchQueryChangedEvent>(_onSearchQueryChanged);
     on<ReturnBookEventEvent>(_onReturnBook);
   }
 
   Future<void> _onLoadBooks(FinderLoadBooksEvent event, Emitter<FinderState> emit) async {
+    print("ADSFSDFSFSDFSDFSDfsdf _onLoadBooks");
     try {
+      print("ADSFSDFSFSDFSDFSDfsdf ??????????11");
       if (state is FinderBooksListState) return;
-
+      print("ADSFSDFSFSDFSDFSDfsdf ??????????22");
       emit(FinderBooksListState(filteredBooksStream));
 
       booksFirebaseRepository.booksStream.listen((books) {
         _allBooks = books;
+        print("ADSFSDFSFSDFSDFSDfsdf ?????????? books $books");
         _applyFilter();
       });
+
     } catch (e) {
       emit(BooksErrorState("Не вдалося завантажити книги"));
     }
@@ -43,7 +48,9 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
 
 
   void _onSearchQueryChanged(FinderSearchQueryChangedEvent event, Emitter<FinderState> emit) {
+
     _currentQuery = event.query;
+    print("ADSFSDFSFSDFSDFSDfsdf event.query=$_currentQuery");
     _applyFilter();
   }
 
@@ -55,7 +62,8 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
     }
 
     final query = _currentQuery.toLowerCase().trim();
-
+    print("ADSFSDFSFSDFSDFSDfsdf_applyFilter event._allBooks=$_allBooks");
+    print("ADSFSDFSFSDFSDFSDfsdf_applyFilter event.query=$query");
     final filtered = query.isEmpty
         ? _allBooks
         : _allBooks.where((book) {
@@ -63,7 +71,7 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
           book.author.toLowerCase().contains(query) ||
           book.barcode.toLowerCase() == query;
     }).toList();
-
+    print("_currentQuery22 event.filtered=$filtered");
     _filteredBooksController.add(filtered);
   }
   

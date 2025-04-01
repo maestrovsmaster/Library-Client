@@ -22,7 +22,8 @@ class LoanItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Card(
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
           child: Column(
             children: [
@@ -40,8 +41,10 @@ class LoanItem extends StatelessWidget {
                         height: 80,
                         color: Colors.grey[300],
                       ),
-                      errorWidget: (context, url, error) =>
-                          Icon(Icons.broken_image, size: 40, color: Colors.grey[300]),
+                      errorWidget: (context, url, error) => Icon(
+                          Icons.broken_image,
+                          size: 40,
+                          color: Colors.grey[300]),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -55,7 +58,8 @@ class LoanItem extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             book['title'] ?? '',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                         ],
                       ),
@@ -63,29 +67,47 @@ class LoanItem extends StatelessWidget {
                   ],
                 ),
               ),
-
-              const Divider(thickness: 1, height: 1, indent: 16, endIndent: 16, color: AppColors.cardBackground2),
-
-              SizedBox(width: double.infinity,
-                  child:
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(reader['name'] ?? '',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 4),
-                    Text(reader['phoneNumber'] ?? '',
-                        style: const TextStyle(color: Colors.grey)),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Дата видачі: ${_formatDate(loan.dateBorrowed)}',
-                      style: const TextStyle(fontSize: 12, color: Colors.black54),
-                    ),
-                  ],
-                ),
-              )),
+              const Divider(
+                  thickness: 1,
+                  height: 1,
+                  indent: 16,
+                  endIndent: 16,
+                  color: AppColors.cardBackground2),
+              SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(reader['name'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600)),
+                                const SizedBox(height: 4),
+                                Text(reader['phoneNumber'] ?? '',
+                                    style: const TextStyle(color: Colors.grey)),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Дата видачі: ${_formatDate(loan.dateBorrowed)}',
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.black54),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 130,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text("Повернути", style: TextStyle(fontSize: 11, color: Colors.white)),
+                              ),
+                            )
+                          ]))),
             ],
           ),
         ),

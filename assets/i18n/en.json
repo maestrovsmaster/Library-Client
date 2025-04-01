@@ -1,7 +1,12 @@
 {
-"welcome_title": "Welcome!",
-  "tab_scan": "Scan",
-  "tab_collection": "Books",
-  "tab_reservations": "Loans",
-  "tab_settings": "Account"
+
+  "welcome_title": "Ласкаво просимо!",
+  "welcome_subtitle": "Знаходьте, бронюйте та повертайте книги просто.",
+  "tab_scan": "Сканувати",
+  "tab_collection": "Книги",
+  "tab_reservations": "Позики",
+  "tab_settings": "Акаунт",
+  "sign_in": "Увійти",
+  "dont_have_account": "Немає акаунту?",
+  "sign_up_first": "Зареєструйтесь"
 }

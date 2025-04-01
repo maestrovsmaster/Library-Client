@@ -18,6 +18,7 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
 
   Stream<List<Book>> get filteredBooksStream => _filteredBooksController.stream;
 
+
   BooksListBloc({required this.booksRepository, required this.booksFirebaseRepository}) : super(BooksInitialState()) {
     on<LoadBooksEvent>(_onLoadBooks);
     on<SearchQueryChangedEvent>(_onSearchQueryChanged);
@@ -28,7 +29,9 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
     try {
       if (state is BooksStreamState) return;
 
-      emit(BooksStreamState(filteredBooksStream));
+      final categories = booksFirebaseRepository.catetories;
+
+      emit(BooksStreamState(categories, filteredBooksStream));
 
       booksFirebaseRepository.booksStream.listen((books) {
         _allBooks = books;

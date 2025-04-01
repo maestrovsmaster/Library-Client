@@ -14,9 +14,10 @@ class BooksInitialState extends BooksListState {}
 
 /// Стан із потоком даних
 class BooksStreamState extends BooksListState {
+  final List<String> categories;
   final Stream<List<Book>> booksStream;
 
-  const BooksStreamState(this.booksStream);
+  const BooksStreamState(this.categories, this.booksStream);
 
   @override
   List<Object> get props => [booksStream];

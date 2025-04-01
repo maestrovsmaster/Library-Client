@@ -21,17 +21,21 @@ class LoansRepository {
   Stream<List<Loan>> get loansStream => _loansController.stream;
 
   void _listenToFirestore() {
-    final loansRepo = "loans-$postfix";
+    final loansRepo = postfix.isEmpty?
+    "loans":
+    "loans-$postfix";
+    //final loansRepo = "loans-$postfix";
     bool firstRefreshDone = false;
 
     firestore.collection(loansRepo)
-        .where('dateReturned', isNull: true)
+        //.where('dateReturned', isNull: true)
+        .where('dateReturned', whereIn: [''])
         .snapshots()
         .listen((snapshot) {
       // Якщо це кеш, і перше оновлення ще не отримано з мережі — ігноруємо
-      if (snapshot.metadata.isFromCache && !firstRefreshDone) {
+     /* if (snapshot.metadata.isFromCache && !firstRefreshDone) {
         return;
-      }
+      }*/
 
       // Після першого не-кешованого оновлення — прапорець
       if (!snapshot.metadata.isFromCache) {
