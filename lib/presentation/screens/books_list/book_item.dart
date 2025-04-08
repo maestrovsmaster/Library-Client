@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:leeds_library/core/theme/app_colors.dart';
 import 'package:leeds_library/data/models/book.dart';
+import 'package:leeds_library/presentation/widgets/book_image.dart';
 
 class BookItem extends StatelessWidget {
   final Book book;
@@ -20,25 +21,14 @@ class BookItem extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
           child: Row(children: [
-            /* book.imageUrl.isNotEmpty
-            ? Image.network(book.imageUrl,
-                width: 80, height: 130, fit: BoxFit.cover)
-            : Icon(Icons.book, size: 50),*/
 
-            CachedNetworkImage(
-              imageUrl: book.imageUrl,
+            SizedBox(
               width: 80,
               height: 130,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                width: 90,
-                height: 126,
-                color: Colors.grey[300],
-                child: Center(), // Або анімація
-              ),
-              errorWidget: (context, url, error) =>
-                  Icon(Icons.broken_image, size: 50, color: Colors.grey[300]),
+              child: BookImage(imageUrl: book.imageUrl),
             ),
+
+
             SizedBox(width: 16),
             Expanded(
                 child: Align(

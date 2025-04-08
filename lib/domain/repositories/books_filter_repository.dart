@@ -1,10 +1,10 @@
 
 import 'package:leeds_library/data/models/book.dart';
 
-import 'books_firebase_repository.dart';
+import 'books_repository.dart';
 
 class BooksFilterRepository {
-  final BooksFirebaseRepository booksRepository;
+  final BooksRepository booksRepository;
 
   BooksFilterRepository(this.booksRepository);
 

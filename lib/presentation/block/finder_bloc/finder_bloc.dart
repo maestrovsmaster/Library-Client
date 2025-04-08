@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:leeds_library/data/models/book.dart';
-import 'package:leeds_library/domain/repositories/books_firebase_repository.dart';
 import 'package:leeds_library/domain/repositories/books_repository.dart';
 import 'package:leeds_library/domain/repositories/loans_repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,7 +8,6 @@ import 'finder_event.dart';
 import 'finser_state.dart';
 
 class FinderBloc extends Bloc<FinderEvent, FinderState> {
-  final BooksFirebaseRepository booksFirebaseRepository;
   final BooksRepository booksRepository;
   final _filteredBooksController = BehaviorSubject<List<Book>>();
   final LoansRepository loansRepository;
@@ -19,7 +17,7 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
 
   Stream<List<Book>> get filteredBooksStream => _filteredBooksController.stream;
 
-  FinderBloc({required this.booksRepository, required this.booksFirebaseRepository, required this.loansRepository}) : super(BooksInitialState()) {
+  FinderBloc({required this.booksRepository, required this.loansRepository}) : super(BooksInitialState()) {
     print("ADSFSDFSFSDFSDFSDfsdf ==============================================================FinderBlocFinderBlocFinderBlocFinderBlocFinderBlocFinderBlocFinderBloc");
     on<FinderLoadBooksEvent>(_onLoadBooks);
     on<FinderSearchQueryChangedEvent>(_onSearchQueryChanged);
@@ -34,7 +32,7 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
       print("ADSFSDFSFSDFSDFSDfsdf ??????????22");
       emit(FinderBooksListState(filteredBooksStream));
 
-      booksFirebaseRepository.booksStream.listen((books) {
+      booksRepository.booksStream.listen((books) {
         _allBooks = books;
         print("ADSFSDFSFSDFSDFSDfsdf ?????????? books $books");
         _applyFilter();

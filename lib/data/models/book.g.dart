@@ -26,13 +26,15 @@ class BookAdapter extends TypeAdapter<Book> {
       imageUrl: fields[6] as String,
       barcode: fields[7] as String,
       isAvailable: fields[8] as bool,
+      averageRating: fields[9] as double?,
+      reviewsCount: fields[10] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Book obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +52,11 @@ class BookAdapter extends TypeAdapter<Book> {
       ..writeByte(7)
       ..write(obj.barcode)
       ..writeByte(8)
-      ..write(obj.isAvailable);
+      ..write(obj.isAvailable)
+      ..writeByte(9)
+      ..write(obj.averageRating)
+      ..writeByte(10)
+      ..write(obj.reviewsCount);
   }
 
   @override

@@ -23,5 +23,11 @@ class AppColors {
   static const Color tabBackground = Color(0xFF0B1519);
   static const Color actionReturnColor = Color(0xFF5A6D5B);
 
+  static const Color cardColorGreen = Color(0xFF6EA25F);
+  static const Color badgeColorGreen = Color(0xFF819B7B);
+  static const Color badgeColor = Color(0xFF88A39F);
+  static const Color badgeColorBlue = Color(0xFF8497A2);
+  static const Color cardColorGray = Color(0xFF6F7A80);
+
 }
 

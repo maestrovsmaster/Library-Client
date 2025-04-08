@@ -109,6 +109,9 @@ flutter:
     - assets/images/ic_account.svg
     - assets/images/ic_barcode_scanner.svg
     - assets/images/img_background.jpg
+    - assets/images/star_empty.svg
+    - assets/images/star_full.svg
+    - assets/images/star_half.svg
 
 
   uses-material-design: true

@@ -10,6 +10,8 @@ export class Book {
     isAvailable?: boolean;
     createdAt?: FirebaseFirestore.Timestamp;
     updatedAt?: FirebaseFirestore.Timestamp;
+    averageRating?: number;
+    reviewsCount?: number;
   
     constructor(
       id: string,
@@ -22,7 +24,9 @@ export class Book {
       barcode?: string,
       isAvailable?: boolean,
       createdAt?: FirebaseFirestore.Timestamp,
-      updatedAt?: FirebaseFirestore.Timestamp
+      updatedAt?: FirebaseFirestore.Timestamp,
+      averageRating?: number,
+      reviewsCount?: number,
     ) {
       this.id = id;
       this.title = title;
@@ -35,6 +39,8 @@ export class Book {
       this.isAvailable = isAvailable ?? true;
       this.createdAt = createdAt ?? FirebaseFirestore.Timestamp.now();
       this.updatedAt = updatedAt ?? FirebaseFirestore.Timestamp.now();
+      this.averageRating = averageRating;
+      this.reviewsCount = reviewsCount;
     }
   
     static fromJson(json: any): Book {
@@ -49,7 +55,9 @@ export class Book {
         json['barcode'],
         json['isAvailable'],
         json['createdAt'],
-        json['updatedAt']
+        json['updatedAt'],
+        json['averageRating'],
+        json['reviewsCount']
       );
     }
   
@@ -66,6 +74,8 @@ export class Book {
         isAvailable: this.isAvailable ?? true,
         createdAt: this.createdAt ?? FirebaseFirestore.Timestamp.now(),
         updatedAt: this.updatedAt ?? FirebaseFirestore.Timestamp.now(),
+        averageRating: this.averageRating ?? 0,
+        reviewsCount: this.reviewsCount ?? 0
       };
     }
   
@@ -81,7 +91,9 @@ export class Book {
         data['barcode'],
         data['isAvailable'],
         data['createdAt'],
-        data['updatedAt']
+        data['updatedAt'],
+        data['averageRating'],
+        data['reviewsCount']
       );
     }
   }

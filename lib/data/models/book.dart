@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 
@@ -33,6 +35,12 @@ class Book {
   @HiveField(8)
   final bool isAvailable;
 
+  @HiveField(9)
+  final double? averageRating;
+
+  @HiveField(10)
+  final int? reviewsCount;
+
   Book({
     required this.id,
     required this.title,
@@ -43,6 +51,8 @@ class Book {
     required this.imageUrl,
     required this.barcode,
     required this.isAvailable,
+    required this.averageRating,
+    required this.reviewsCount,
   });
 
   factory Book.fromJson(Map<String, dynamic> json) {
@@ -56,6 +66,8 @@ class Book {
       imageUrl: json['imageUrl'] ?? '',
       barcode: json['barcode'] ?? '',
       isAvailable: json['isAvailable'] ?? true,
+      averageRating: json['averageRating'] ?? 0.0,
+      reviewsCount: json['reviewsCount'] ?? 0,
     );
   }
 
@@ -70,17 +82,21 @@ class Book {
       'imageUrl': imageUrl,
       'barcode': barcode,
       'isAvailable': isAvailable,
+      'averageRating': averageRating,
+      'reviewsCount': reviewsCount,
     };
   }
 
   factory Book.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>?; // Конвертуємо Firestore-документ у Map
+    final data = doc.data()
+        as Map<String, dynamic>?; // Конвертуємо Firestore-документ у Map
     if (data == null) {
       throw Exception("Document doesn't contain data");
     }
 
     return Book(
-      id: doc.id, // ID беремо з самого документа Firestore
+      id: doc.id,
+      // ID беремо з самого документа Firestore
       title: data['title'] ?? '',
       author: data['author'] ?? '',
       genre: data['genre'] ?? '',
@@ -89,6 +105,8 @@ class Book {
       imageUrl: data['imageUrl'] ?? '',
       barcode: data['barcode'] ?? '',
       isAvailable: data['isAvailable'] ?? true,
+      averageRating: data['averageRating'] ?? 0.0,
+      reviewsCount: data['reviewsCount'] ?? 0,
     );
   }
 
@@ -101,6 +119,8 @@ class Book {
     String? imageUrl,
     String? barcode,
     bool? isAvailable,
+    double? averageRating,
+    int? reviewsCount,
   }) {
     return Book(
       id: this.id,
@@ -112,8 +132,23 @@ class Book {
       imageUrl: imageUrl ?? this.imageUrl,
       barcode: barcode ?? this.barcode,
       isAvailable: isAvailable ?? this.isAvailable,
+      averageRating: averageRating ?? this.averageRating,
+      reviewsCount: reviewsCount ?? this.reviewsCount,
     );
   }
 
-  static Book empty() => Book(id: '', title: '', barcode: '', author: '', genre: '', publisher: '', description: '', imageUrl: '', isAvailable: false);
+  static Book empty() => Book(
+      id: '',
+      title: '',
+      barcode: '',
+      author: '',
+      genre: '',
+      publisher: '',
+      description: '',
+      imageUrl: '',
+      isAvailable: false,
+      averageRating: 0,
+      reviewsCount: 0,
+
+  );
 }

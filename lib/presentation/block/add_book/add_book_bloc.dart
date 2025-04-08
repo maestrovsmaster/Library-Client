@@ -38,6 +38,8 @@ class AddBookBloc extends Bloc<AddBookEvent, AddBookState> {
         imageUrl: imageUrl ?? "",
         barcode: event.barcode,
         isAvailable: true,
+        averageRating: 0.0,
+        reviewsCount: 0,
       );
 
       Result<Book?, String> result = await _bookApiService.createBook(newBook);

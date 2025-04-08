@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:leeds_library/core/di/di_container.dart';
 import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/presentation/block/books_list/books_list_event.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_state.dart';
+import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:leeds_library/presentation/widgets/barcode_scanner_dialog/barcode_scanner_dialog.dart';
 
 import 'book_item.dart';
@@ -91,7 +93,7 @@ class BooksListScreen extends StatelessWidget {
                           itemBuilder: (context, index) => BookItem(
                               book: books[index],
                               onTap: (book) {
-                                // context.read<BooksListBloc>().add(BookSelectedEvent(book));
+                                context.push(AppRoutes.bookDetails, extra: book);
                               },
                              onScanTap: (book) async{
                                 //context.read<BooksListBloc>().add(BookSelectedEvent(book));

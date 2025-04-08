@@ -2,14 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:leeds_library/data/models/book.dart';
-import 'package:leeds_library/domain/repositories/books_firebase_repository.dart';
 import 'package:leeds_library/domain/repositories/books_repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'books_list_event.dart';
 import 'books_lists_state.dart';
 
 class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
-  final BooksFirebaseRepository booksFirebaseRepository;
   final BooksRepository booksRepository;
   final _filteredBooksController = BehaviorSubject<List<Book>>();
 
@@ -19,7 +17,7 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
   Stream<List<Book>> get filteredBooksStream => _filteredBooksController.stream;
 
 
-  BooksListBloc({required this.booksRepository, required this.booksFirebaseRepository}) : super(BooksInitialState()) {
+  BooksListBloc({required this.booksRepository}) : super(BooksInitialState()) {
     on<LoadBooksEvent>(_onLoadBooks);
     on<SearchQueryChangedEvent>(_onSearchQueryChanged);
     on<UpdateBarcode>(_onUpdateBarcode);
@@ -29,11 +27,11 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
     try {
       if (state is BooksStreamState) return;
 
-      final categories = booksFirebaseRepository.catetories;
+      final categories = booksRepository.catetories;
 
       emit(BooksStreamState(categories, filteredBooksStream));
 
-      booksFirebaseRepository.booksStream.listen((books) {
+      booksRepository.booksStream.listen((books) {
         _allBooks = books;
         _applyFilter();
       });
