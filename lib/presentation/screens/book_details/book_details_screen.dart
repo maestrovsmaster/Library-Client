@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:leeds_library/data/models/book.dart';
-import 'package:leeds_library/presentation/block/book_details/book_details_bloc.dart';
-import 'package:leeds_library/presentation/block/book_details/book_details_state.dart';
 import 'package:leeds_library/presentation/screens/book_details/widgets/description_widget.dart';
-import 'package:leeds_library/presentation/widgets/reading_plan_button.dart';
-import 'package:leeds_library/presentation/widgets/reading_plan_heart_button.dart';
 
 import 'widgets/availablity_widget.dart';
 import 'widgets/book_details.dart';

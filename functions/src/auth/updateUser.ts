@@ -17,16 +17,16 @@ export const updateUser = functions.https.onRequest((req, res) => {
     handlePreflight(req, res, () => {
         corsHandler(req, res, async () => {
             try {
-              
 
-               
 
-                 const authorization = req.headers.authorization;
-                                if (!authorization || !authorization.startsWith('Bearer ')) {
-                                    throw new functions.https.HttpsError('unauthenticated', 'Токен відсутній або неправильний.');
-                                }
+
+
+                const authorization = req.headers.authorization;
+                if (!authorization || !authorization.startsWith('Bearer ')) {
+                    throw new functions.https.HttpsError('unauthenticated', 'Токен відсутній або неправильний.');
+                }
                 // Перевірка токена користувача
-              
+
                 const idToken = authorization.split('Bearer ')[1];
                 console.log("authorization idToken = ", idToken);
                 const decodedToken = await getDecodedAccessToken(idToken);
@@ -69,6 +69,43 @@ export const updateUser = functions.https.onRequest((req, res) => {
                 };
 
                 await userRef.update(updatedUser);
+
+                // Get email from userDoc
+                const userData = userDoc.data();
+                const email = userData?.email;
+
+                if (email) {
+                    const collectionReaders = `readers${postfix ? '-' + postfix : ''}`;
+                    const readersCollection = firestore.collection(collectionReaders);
+
+                    const existingReaderQuery = await readersCollection
+                        .where('email', '==', email)
+                        .limit(1)
+                        .get();
+
+                    if (existingReaderQuery.empty) {
+                        // Створити reader
+                        const newReader = {
+                            email,
+                            name,
+                            phoneNumber,
+                            phoneNumberAlt: phoneNumberAlt || '',
+                            createdAt: Timestamp.now(),
+                            updatedAt: Timestamp.now(),
+                        };
+
+                        const newReaderRef = await readersCollection.add(newReader);
+
+                        // Записати readerId в user
+                        await userRef.update({
+                            readerId: newReaderRef.id,
+                        });
+
+                        functions.logger.info(`Reader created for user ${userId} with ID ${newReaderRef.id}`);
+                    }
+                }
+
+
 
                 functions.logger.info(`User ${userId} updated successfully`);
                 return res.status(200).json({

@@ -21,7 +21,7 @@ class RatingWidget extends StatelessWidget {
     List<Widget> stars = [];
 
     for (int i = 0; i < fullStars; i++) {
-      stars.add(_buildSvgStar('assets/images/star_full.svg' , ColorFilter.mode(AppColors.yellow, BlendMode.srcIn)));
+      stars.add(_buildSvgStar('assets/images/star_full.svg' , ColorFilter.mode(Colors.amber, BlendMode.srcIn)));
     }
 
     if (hasHalfStar) {

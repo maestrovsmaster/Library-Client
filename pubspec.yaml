@@ -112,6 +112,7 @@ flutter:
     - assets/images/star_empty.svg
     - assets/images/star_full.svg
     - assets/images/star_half.svg
+    - assets/images/default_avatar.png
 
 
   uses-material-design: true

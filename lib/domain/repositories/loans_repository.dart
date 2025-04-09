@@ -10,10 +10,17 @@ class LoansRepository {
   final FirebaseFirestore firestore;
   final String postfix;
 
+  static const String collectionName = "loans";
+  String collectionPath = collectionName;
+
   final BehaviorSubject<List<Loan>> _loansController =
   BehaviorSubject.seeded([]);
 
   LoansRepository(this._dio, this.firestore, {this.postfix = ''}){
+    collectionPath = postfix.isEmpty?
+    collectionName:
+    "$collectionName-$postfix";
+
     _listenToFirestore();
   }
 
@@ -122,10 +129,9 @@ class LoansRepository {
 
 
   Future<List<Loan>> getActiveLoans() async {
-    final collectionName = 'loans-$postfix';
 
     final snapshot = await firestore
-        .collection(collectionName)
+        .collection(collectionPath)
         .where('dateReturned', isNull: true)
         .get();
 

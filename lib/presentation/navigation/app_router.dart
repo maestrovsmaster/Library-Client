@@ -7,6 +7,7 @@ import 'package:leeds_library/presentation/screens/book_details/book_details_scr
 import 'package:leeds_library/presentation/screens/create_loan_screen/create_loan_screen.dart';
 import 'package:leeds_library/presentation/screens/main_screen/main_screen.dart';
 import 'package:leeds_library/presentation/screens/register_user_screen/register_screen.dart';
+import 'package:leeds_library/presentation/screens/reviews_screen/reviews_screen.dart';
 import 'package:leeds_library/presentation/screens/sign_in_google_screen/google_sign_in_screen.dart';
 import 'package:leeds_library/presentation/screens/welcome_screen/welcome_screen.dart';
 
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String addBook = '/addBook';
   static const String addReader = '/addReader';
   static const String createLoan = '/createLoan';
+  static const String reviews = '/reviews';
 }
 
 class AppRouter {
@@ -96,6 +98,18 @@ class AppRouter {
               transitionsBuilder: slideTransition,
             );
           }),
+
+      GoRoute(
+          path: AppRoutes.reviews,
+          pageBuilder: (context, state) {
+            final book = state.extra as Book?;
+            return  CustomTransitionPage(
+              child: ReviewsList(book: book!),
+              transitionsBuilder: slideTransition,
+            );
+          }),
+
+
 
     ],
   );

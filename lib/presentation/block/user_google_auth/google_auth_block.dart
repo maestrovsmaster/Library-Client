@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:leeds_library/core/di/di_container.dart';
 import 'package:leeds_library/data/net/global_interceptor.dart';
 import 'package:leeds_library/domain/repositories/sign_in_repository.dart';
+import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
 
 import 'google_auth_event.dart';
 import 'google_auth_state.dart';
@@ -34,6 +36,8 @@ class GoogleAuthBloc extends Bloc<GoogleAuthEvent, GoogleAuthState> {
           final appUser = result.data!;
           print("================= AppUser isSuccess $appUser");
           if(appUser.name != null && appUser.name.isNotEmpty) {
+            final userCubit = sl<UserCubit>();
+            userCubit.setUser(result.data!);
             emit(Authenticated(result.data!));
           }else{
             emit(AuthenticatedButNotCompleted(result.data!));

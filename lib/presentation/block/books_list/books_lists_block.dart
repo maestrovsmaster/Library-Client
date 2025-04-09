@@ -67,6 +67,15 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
   }
 
   Future<void> _onUpdateBarcode(UpdateBarcode event, Emitter<BooksListState> emit) async {
-    booksRepository.updateBookBarcode(event.id, event.code);
+    final result = await booksRepository.updateBookBarcode(event.id, event.code);
+    print("Barcode Update barcode result = ${result.isSuccess}");
+    if (result.isSuccess) {
+      print("Barcode updated");
+      emit(BarcodeUpdated());
+    } else {
+      print("Barcode update error: ${result.error}");
+      emit(BarcodeUpdateError(result.error!));
+    }
+
   }
 }

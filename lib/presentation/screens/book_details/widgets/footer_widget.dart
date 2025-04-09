@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:leeds_library/data/models/book.dart';
+import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:leeds_library/presentation/widgets/reading_plan_heart_button.dart';
 import 'package:leeds_library/presentation/widgets/reviews_button.dart';
 
@@ -28,7 +30,7 @@ class FooterWidget extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Padding(padding: EdgeInsets.only(right: 16),child:
             ReviewsButton(text: hasReviews ? "ВІДГУКИ" : "НАПИСАТИ ВІДГУК", onPressed: (){
-
+              context.push(AppRoutes.reviews, extra: book);
             }))
           ),
 

@@ -7,6 +7,7 @@ import 'package:leeds_library/presentation/block/books_list/books_list_event.dar
 import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_state.dart';
 import 'package:leeds_library/presentation/navigation/app_router.dart';
+import 'package:leeds_library/presentation/widgets/animated_checkmark.dart';
 import 'package:leeds_library/presentation/widgets/barcode_scanner_dialog/barcode_scanner_dialog.dart';
 
 import 'book_item.dart';
@@ -69,60 +70,91 @@ class BooksListScreen extends StatelessWidget {
           ),
         ),
 
-        body: BlocBuilder<BooksListBloc, BooksListState>(
-          builder: (context, state) {
-            if (state is BooksStreamState) {
-              return StreamBuilder<List<Book>>(
-                stream: state.booksStream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator());
-
-
-
-                  final books = snapshot.data!;
-
-
-
-                  return books.isEmpty
-                      ? Center(child: Text("Нічого не знайдено"))
-                      : ListView.separated(
-                          separatorBuilder: (context, index) =>
-                              Divider(height: 0.5, color: Colors.grey[300]),
-                          itemCount: books.length,
-                          itemBuilder: (context, index) => BookItem(
-                              book: books[index],
-                              onTap: (book) {
-                                context.push(AppRoutes.bookDetails, extra: book);
-                              },
-                             onScanTap: (book) async{
-                                //context.read<BooksListBloc>().add(BookSelectedEvent(book));
-                               final result = await showDialog<String>(
-                                 context: context,
-                                 builder: (_) => const BarcodeScannerDialog(),
-                               );
-
-                               if (result != null) {
-                                 //_searchController.value = TextEditingValue(text: result);
-                                // context.read<BooksListBloc>().add(SearchQueryChangedEvent(result));
-
-                                 context.read<BooksListBloc>().add(UpdateBarcode(book.id, result));
-
-                               }
-                             },
-
-                              ),
-                        );
-                },
-              );
-            } else if (state is BooksErrorState) {
-              return Center(child: Text(state.message));
-            } else {
-              return Center(child: CircularProgressIndicator());
+        body: BlocConsumer<BooksListBloc, BooksListState>(
+          listener: (BuildContext context,  state) {
+            if (state is BooksErrorState) {
+              _showDialog(context, state.message);
             }
+            if (state is BarcodeUpdateError) {
+              _showDialog(context, state.message);
+            }
+            if (state is BarcodeUpdated) {
+              showCheckmark(context);
+            }
+          },
+          builder: (context, state) {
+
+            final isStreamActive = state is BooksStreamState;
+            return !isStreamActive ? Center(child: CircularProgressIndicator()) :
+
+              StreamBuilder<List<Book>>(
+              stream: context.read<BooksListBloc>().filteredBooksStream, //state.booksStream,
+              builder: (context, snapshot) {
+                //if (!snapshot.hasData)
+                 // return Center(child: CircularProgressIndicator());
+
+
+                if(snapshot.data == null){
+                  return Center(child: CircularProgressIndicator());
+                }
+                final books = snapshot.data!;
+
+
+
+                return books.isEmpty
+                    ? Center(child: Text("Нічого не знайдено"))
+                    : ListView.separated(
+                  separatorBuilder: (context, index) =>
+                      Divider(height: 0.5, color: Colors.grey[300]),
+                  itemCount: books.length,
+                  itemBuilder: (context, index) => BookItem(
+                    book: books[index],
+                    onTap: (book) {
+                      context.push(AppRoutes.bookDetails, extra: book);
+                    },
+                    onScanTap: (book) async{
+                      //context.read<BooksListBloc>().add(BookSelectedEvent(book));
+                      final result = await showDialog<String>(
+                        context: context,
+                        builder: (_) => const BarcodeScannerDialog(),
+                      );
+
+                      if (result != null) {
+                        //_searchController.value = TextEditingValue(text: result);
+                        // context.read<BooksListBloc>().add(SearchQueryChangedEvent(result));
+
+                        context.read<BooksListBloc>().add(UpdateBarcode(book.id, result));
+
+                      }
+                    },
+
+                  ),
+                );
+              },
+            );
+
+
+
           },
         ),
       ),
     );
   }
+
+   _showDialog(BuildContext context, String message){
+     showDialog(
+       context: context,
+       builder: (_) => AlertDialog(
+         title: Text("Помилка"),
+         content: Text(message),
+         actions: [
+           TextButton(
+             onPressed: () => Navigator.of(context).pop(),
+             child: Text("OK"),
+           ),
+         ],
+       ),
+     );
+   }
+
 }

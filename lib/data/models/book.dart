@@ -105,7 +105,10 @@ class Book {
       imageUrl: data['imageUrl'] ?? '',
       barcode: data['barcode'] ?? '',
       isAvailable: data['isAvailable'] ?? true,
-      averageRating: data['averageRating'] ?? 0.0,
+      averageRating: (data['averageRating'] != null)
+          ? (data['averageRating'] as num).toDouble()
+          : 0.0,
+
       reviewsCount: data['reviewsCount'] ?? 0,
     );
   }

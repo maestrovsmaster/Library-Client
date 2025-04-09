@@ -8,6 +8,7 @@ import 'package:leeds_library/data/net/global_interceptor.dart';
 import 'package:leeds_library/domain/repositories/books_repository.dart';
 import 'package:leeds_library/domain/repositories/loans_repository.dart';
 import 'package:leeds_library/domain/repositories/readers_repository.dart';
+import 'package:leeds_library/domain/repositories/review_repository.dart';
 import 'package:leeds_library/domain/repositories/sign_in_repository.dart';
 import 'package:leeds_library/presentation/block/account/account_block.dart';
 import 'package:leeds_library/presentation/block/add_book/add_book_bloc.dart';
@@ -19,6 +20,7 @@ import 'package:leeds_library/presentation/block/create_loan/create_loan_bloc.da
 import 'package:leeds_library/presentation/block/finder_bloc/finder_bloc.dart';
 import 'package:leeds_library/presentation/block/loans_list/loans_list_bloc.dart';
 import 'package:leeds_library/presentation/block/main_screen/main_screen_block.dart';
+import 'package:leeds_library/presentation/block/reviews/reviews_bloc.dart';
 import 'package:leeds_library/presentation/block/text_recognize/text_recognize_block.dart';
 import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
 import 'package:leeds_library/presentation/block/user_google_auth/google_auth_block.dart';
@@ -52,13 +54,14 @@ Future<void> init(
   sl.registerLazySingleton(() =>
       SignInRepository(sl<Dio>(), sl<UserCubit>(), sl<AuthInterceptor>()));
 
-  sl.registerLazySingleton(() => BooksRepository(sl<Dio>(),firebase, itemBox, postfix: postfix));
+  sl.registerLazySingleton(
+      () => BooksRepository(sl<Dio>(), firebase, itemBox, postfix: postfix));
   sl.registerLazySingleton(
       () => ReadersRepository(sl<Dio>(), firebase, postfix: postfix));
   sl.registerLazySingleton(
       () => LoansRepository(sl<Dio>(), firebase, postfix: postfix));
-
-
+  sl.registerLazySingleton(
+      () => ReviewsRepository(sl<Dio>(), firebase, postfix: postfix));
 
   sl.registerFactory(() => WelcomeBloc(
       repository: sl<SignInRepository>(),
@@ -81,8 +84,8 @@ Future<void> init(
   sl.registerFactory(() => MainScreenBloc(repository: sl<SignInRepository>()));
 
   sl.registerFactory(() => BooksListBloc(
-      booksRepository: sl<BooksRepository>(),
-    ));
+        booksRepository: sl<BooksRepository>(),
+      ));
 
   sl.registerFactory(() => FinderBloc(
       booksRepository: sl<BooksRepository>(),
@@ -95,6 +98,8 @@ Future<void> init(
 
   sl.registerFactory(() => LoansListBloc(repository: sl<LoansRepository>()));
 
-  sl.registerFactory(() => BookDetailsBloc(booksRepository: sl<BooksRepository>()));
+  sl.registerFactory(
+      () => BookDetailsBloc(booksRepository: sl<BooksRepository>()));
 
+  sl.registerFactory(() => ReviewsBloc(repository: sl<ReviewsRepository>(), userCubit: sl<UserCubit>()));
 }

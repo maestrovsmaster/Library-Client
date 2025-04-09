@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:leeds_library/core/utils/utils.dart';
 
 
 class Loan {
@@ -77,12 +78,3 @@ class Loan {
 
 }
 
-DateTime parseDate(dynamic value) {
-  if (value == null) return DateTime.now(); // або throw
-  if (value is Timestamp) return value.toDate();
-  if (value is String) return DateTime.parse(value);
-  if (value is Map<String, dynamic> && value.containsKey('_seconds')) {
-    return DateTime.fromMillisecondsSinceEpoch(value['_seconds'] * 1000);
-  }
-  throw Exception('Unsupported date format: $value');
-}

@@ -34,3 +34,8 @@ class BooksErrorState extends BooksListState {
 }
 
 class BarcodeUpdated extends BooksListState {}
+
+class BarcodeUpdateError extends BooksListState {
+  final String message;
+  const BarcodeUpdateError(this.message);
+}

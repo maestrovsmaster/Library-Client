@@ -11,75 +11,123 @@ if (!admin.apps.length) {
 
 const timestamp: Timestamp = Timestamp.now();
 
+
 export const verifyToken = functions.https.onRequest((req, res) => {
     handlePreflight(req, res, () => {
-        corsHandler(req, res, async () => {
-            try {
-                const authorization = req.headers.authorization;
-                if (!authorization || !authorization.startsWith('Bearer ')) {
-                    throw new functions.https.HttpsError('unauthenticated', 'Токен відсутній або неправильний.');
+      corsHandler(req, res, async () => {
+        try {
+          const authorization = req.headers.authorization;
+          if (!authorization || !authorization.startsWith('Bearer ')) {
+            throw new functions.https.HttpsError('unauthenticated', 'Токен відсутній або неправильний.');
+          }
+  
+          const idToken = authorization.split('Bearer ')[1];
+          const decodedToken = await getDecodedAccessToken(idToken);
+  
+          const user_id = decodedToken.user_id;
+          const email = decodedToken.email || '';
+          const login = decodedToken.name || '';
+          const photoUrl = decodedToken.picture || '';
+          const postfix = req.query.postfix as string | undefined;
+  
+          const collectionUsers = `users${postfix ? '-' + postfix : ''}`;
+          const collectionReaders = `readers${postfix ? '-' + postfix : ''}`;
+          const collectionRoles = `roles${postfix ? '-' + postfix : ''}`;
+          const collectionBans = `userBans${postfix ? '-' + postfix : ''}`;
+  
+          const userRef = admin.firestore().collection(collectionUsers).doc(user_id);
+          let userDoc = await userRef.get();
+  
+          // Role logic
+          let role = 'reader';
+          const roleDoc = await admin.firestore().collection(collectionRoles).doc(user_id).get();
+          if (roleDoc.exists && roleDoc.data()?.role) {
+            role = roleDoc.data()!.role;
+          }
+  
+          let userData: any;
+  
+          // Якщо user існує — перевіримо, чи є readerId або name / phoneNumber
+          if (userDoc.exists) {
+            userData = userDoc.data();
+  
+            const needsReaderData =
+              !userData.readerId || !userData.name || !userData.phoneNumber;
+  
+            if (needsReaderData && email) {
+              const readerQuery = await admin.firestore()
+                .collection(collectionReaders)
+                .where('email', '==', email)
+                .limit(1)
+                .get();
+  
+              if (!readerQuery.empty) {
+                const readerDoc = readerQuery.docs[0];
+                const reader = readerDoc.data();
+  
+                userData.readerId = readerDoc.id;
+  
+                if (!userData.name && reader.name) {
+                  userData.name = reader.name;
                 }
-
-                const idToken = authorization.split('Bearer ')[1];
-                console.log("authorization idToken = ", idToken);
-                const decodedToken = await getDecodedAccessToken(idToken);
-
-                const user_id = decodedToken.user_id;
-                console.log("authorization uid = ", user_id);
-
-                // Check user in Firestore
-                const postfix = req.query.postfix as string | undefined;
-                const collectionNameUsers = `users${postfix ? '-' + postfix : ''}`;
-                const userRef = admin.firestore().collection(collectionNameUsers).doc(user_id);
-                const userDoc = await userRef.get();
-
-
-                let role = 'reader'; // default role
-                const collectionNameRoles = `roles${postfix ? '-' + postfix : ''}`;
-                const roleDoc = await admin.firestore().collection(collectionNameRoles).doc(user_id).get();
-                if (roleDoc.exists && roleDoc.data()?.role) {
-                  role = roleDoc.data()!.role;
+  
+                if (!userData.phoneNumber && reader.phoneNumber) {
+                  userData.phoneNumber = reader.phoneNumber;
                 }
-
-
-                let userData;
-
-                if (userDoc.exists) {
-                    userData = userDoc.data();
-                    if (userData) {
-                        userData.role = role;
-                      }
-                } else {
-                    userData = {
-                        user_id,
-                        email: decodedToken.email || '',
-                        login: decodedToken.name || '',
-                        name: null,
-                        phoneNumber: null,
-                        phoneNumberAlt: null,
-                        photoUrl: decodedToken.picture,
-                        role: role, // Нові користувачі за замовчуванням не є адміністраторами
-                        createdAt: timestamp,
-                    };
-
-                    await userRef.set(userData);
-                }
-
-                // Перевіряємо статус "isBanned" (якщо потрібно)
-                const collectionName = `userBans${postfix ? '-' + postfix : ''}`;
-                const banRef = admin.firestore().collection(collectionName).doc(user_id);
-                const banDoc = await banRef.get();
-
-                if (banDoc.exists) {
-                    throw new functions.https.HttpsError('permission-denied', 'Користувач заблокований.');
-                }
-
-                // Повертаємо користувача на клієнт
-                res.status(200).json(userData);
-            } catch (error) {
-                console.error('Error user authorization:', error);
-                return handleError(res, error);
+  
+                // Зберігаємо оновлення
+                await userRef.set(userData, { merge: true });
+              }
             }
-        });
+  
+          } else {
+            // Створення нового користувача
+            userData = {
+              userId: user_id,
+              email: email,
+              login: login,
+              name: null,
+              phoneNumber: null,
+              phoneNumberAlt: null,
+              photoUrl: photoUrl,
+              role: role,
+              createdAt: timestamp,
+            };
+  
+            // Перевірка, чи є reader
+            const readerQuery = await admin.firestore()
+              .collection(collectionReaders)
+              .where('email', '==', email)
+              .limit(1)
+              .get();
+  
+            if (!readerQuery.empty) {
+              const readerDoc = readerQuery.docs[0];
+              const reader = readerDoc.data();
+  
+              userData.readerId = readerDoc.id;
+              if (reader.name) userData.name = reader.name;
+              if (reader.phoneNumber) userData.phoneNumber = reader.phoneNumber;
+            }
+  
+            await userRef.set(userData);
+          }
+  
+          // Check for ban
+          const banDoc = await admin.firestore().collection(collectionBans).doc(user_id).get();
+          if (banDoc.exists) {
+            throw new functions.https.HttpsError('permission-denied', 'Користувач заблокований.');
+          }
+  
+          // OK: повертаємо профіль
+          userData.role = role;
+          res.status(200).json(userData);
+  
+        } catch (error) {
+          console.error('Error user authorization:', error);
+          return handleError(res, error);
+        }
+      });
     });
-});
+  });
+  

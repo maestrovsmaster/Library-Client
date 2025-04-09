@@ -7,3 +7,5 @@ abstract class BooksDetailsEvent extends Equatable {
   List<Object> get props => [];
 }
 
+
+

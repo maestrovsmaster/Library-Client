@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:leeds_library/core/theme/app_theme.dart';
 
 import 'package:leeds_library/core/di/di_container.dart' as di;
-import 'package:leeds_library/domain/repositories/books_repository.dart';
 import 'package:leeds_library/presentation/block/account/account_block.dart';
 import 'package:leeds_library/presentation/block/add_book/add_book_bloc.dart';
 import 'package:leeds_library/presentation/block/add_reader/add_reader_bloc.dart';
@@ -13,12 +12,13 @@ import 'package:leeds_library/presentation/block/books_list/books_lists_block.da
 import 'package:leeds_library/presentation/block/create_loan/create_loan_bloc.dart';
 import 'package:leeds_library/presentation/block/finder_bloc/finder_bloc.dart';
 import 'package:leeds_library/presentation/block/loans_list/loans_list_bloc.dart';
+import 'package:leeds_library/presentation/block/reviews/reviews_bloc.dart';
+import 'package:leeds_library/presentation/block/reviews/reviews_event.dart';
 import 'package:leeds_library/presentation/block/text_recognize/text_recognize_block.dart';
 import 'package:leeds_library/presentation/block/user_google_auth/google_auth_block.dart';
 import 'package:leeds_library/presentation/block/user_register/register_block.dart';
 
-//import 'package:leeds_library/presentation/block/auth/auth_block.dart';
-//import 'package:leeds_library/presentation/block/auth/auth_event.dart';
+
 import 'package:leeds_library/presentation/navigation/app_router.dart';
 
 
@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<CreateLoanBloc>()),
         BlocProvider(create: (context) => di.sl<LoansListBloc>()),
         BlocProvider(create: (context) => di.sl<BookDetailsBloc>()),
+        BlocProvider(create: (context) => di.sl<ReviewsBloc>()..add(InitialEvent())),
 
 
       ],

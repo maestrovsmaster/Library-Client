@@ -11,12 +11,20 @@ class BooksRepository{
   final Box<Book> bookBox;
   final String postfix;
 
+  static const String collectionName = "books";
+  String collectionPath = collectionName;
+
   final BehaviorSubject<List<Book>> _booksController =
   BehaviorSubject.seeded([]);
 
   final List<String> catetories = [];
 
   BooksRepository(this._dio, this.firestore, this.bookBox, {this.postfix = ''}){
+
+    collectionPath = postfix.isEmpty?
+    collectionName:
+    "$collectionName-$postfix";
+
     _loadCachedBooks();
     _listenToFirestore();
   }
@@ -32,12 +40,9 @@ class BooksRepository{
   }
 
   void _listenToFirestore() {
-    final bookRepo = postfix.isEmpty?
-    "books":
-    "books-$postfix";
 
-    print("bookRepo: $bookRepo");
-    firestore.collection(bookRepo).snapshots().listen((snapshot) {
+
+    firestore.collection(collectionPath).snapshots().listen((snapshot) {
       if (snapshot.metadata.isFromCache &&
           !snapshot.metadata.hasPendingWrites) {
         return;
@@ -63,9 +68,13 @@ class BooksRepository{
           hasChanges = true;
         } else if (change.type == DocumentChangeType.modified) {
           var index = books.indexWhere((b) => b.id == book.id);
+          print("DocumentChangeType.modified = $index");
           if (index != -1 &&
               (books[index].barcode != book.barcode ||
-                  books[index].isAvailable != book.isAvailable)) {
+                  books[index].isAvailable != book.isAvailable ||
+                  books[index].averageRating != book.averageRating ||
+                  books[index].reviewsCount != book.reviewsCount
+              )) {
             books[index] = book;
             hasChanges = true;
           }
@@ -122,9 +131,9 @@ class BooksRepository{
   }
 
 
-
-
-  /// Створення нової книги
+  /**
+   * Create a new book.
+   */
   Future<Result<Book?, String>> createBook(Book book) async {
     try {
       final response = await _dio.post(
@@ -140,9 +149,14 @@ class BooksRepository{
       } else {
         return Result.failure("Server returned an error: ${response.statusCode}");
       }
+    }  on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return Result.failure("Access denied: insufficient permissions.");
+      } else {
+        return Result.failure("Network error: ${e.message}");
+      }
     } catch (e) {
-      print('Error creating book: $e');
-      return Result.failure("Network error: $e");
+      return Result.failure("Unexpected error: $e");
     }
   }
 
@@ -161,9 +175,14 @@ class BooksRepository{
       } else {
         return Result.failure("Server returned an error: ${response.statusCode}");
       }
+    }  on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return Result.failure("Access denied: insufficient permissions.");
+      } else {
+        return Result.failure("Network error: ${e.message}");
+      }
     } catch (e) {
-      print('Error updating book: $e');
-      return Result.failure("Network error: $e");
+      return Result.failure("Unexpected error: $e");
     }
   }
 
@@ -185,9 +204,14 @@ class BooksRepository{
       } else {
         return Result.failure("Server returned an error: ${response.statusCode}");
       }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return Result.failure("Access denied: insufficient permissions.");
+      } else {
+        return Result.failure("Network error: ${e.message}");
+      }
     } catch (e) {
-      print('Error updating book: $e');
-      return Result.failure("Network error: $e");
+      return Result.failure("Unexpected error: $e");
     }
   }
 
