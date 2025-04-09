@@ -27,7 +27,7 @@ class BookDetails extends StatelessWidget {
           SizedBox(
             width: imageWidth,
             height: imageHeight,
-            child: BookImage(imageUrl: book.imageUrl),
+            child: BookImage(imageUrl: book.imageUrl, showImageByTap: true),
           ),
           const SizedBox(width: 16),
           Expanded(

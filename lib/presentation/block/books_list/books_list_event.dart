@@ -7,10 +7,8 @@ abstract class BooksListEvent extends Equatable {
   List<Object> get props => [];
 }
 
-/// Подія для завантаження всіх книг
 class LoadBooksEvent extends BooksListEvent {}
 
-/// Подія для оновлення пошуку
 class SearchQueryChangedEvent extends BooksListEvent {
   final String query;
 

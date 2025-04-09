@@ -8,6 +8,10 @@ class AppColors {
 
   static const Color yellow = Color(0xFFFFEDB1);
   static const Color accentColor = Color(0xFFC48A00);
+  static const Color redWarm = Color(0xFFC1574A);
+  static const Color redSoft = Color(0xFFB24C4C);
+
+
   static const Color white = Color(0xFFFFFFFF);
 
   static const Color cardBackground = Color(0xFFF7F4EF);

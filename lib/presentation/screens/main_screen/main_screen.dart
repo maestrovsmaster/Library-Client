@@ -39,28 +39,7 @@ class MainScreen extends StatelessWidget {
 
               if (state is MainScreenInitial) {
                 return Scaffold(
-                   /* appBar: PreferredSize(
-                        preferredSize: const Size.fromHeight(72),
-                        child: AppBar(
-                          title: Text(
-                            _getTitle(state.selectedIndex),
-                            style: Theme.of(context).textTheme.displayLarge,
-                          ),
-                          actions: [
-                            Stack(
-                              children: [
-                                NotificationsWidget(
-                                  hasNotifications: state.notificationCount > 0,
-                                  onClick: () {
-                                    _showLogoutDialog(context,() =>
-                                      context.read<MainScreenBloc>().add(LogoutRequested())
-                                    );
-                                  },
-                                )
-                              ],
-                            ),
-                          ],
-                        )),*/
+
                     body: _getSelectedScreen(state.selectedIndex),
                     bottomNavigationBar: MainScreenBottomNavigationBar(
                       currentIndex: state.selectedIndex,
@@ -76,20 +55,7 @@ class MainScreen extends StatelessWidget {
         ));
   }
 
-  String _getTitle(int index) {
-    switch (index) {
-      case 0:
-        return translate('tab_scan');
-      case 1:
-        return translate('my_collection');
-      case 2:
-        return translate('tab_shop');
-      case 3:
-        return translate('tab_settings');
-      default:
-        return '';
-    }
-  }
+
 
   Widget _getSelectedScreen(int index) {
     switch (index) {
