@@ -22,7 +22,17 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
         emit(WelcomeUnauthenticated());
         return;
       }
-      final idToken = await user.getIdToken();
+      String? idToken;
+      try {
+        idToken = await user.getIdToken();
+        if (idToken != null) {
+          authInterceptor.updateToken(idToken);
+        }
+      } catch (e, stack) {
+        print("❌ Failed to get ID Token: $e");
+        emit(WelcomeUnauthenticated());
+        return;
+      }
       if (idToken != null) {
         authInterceptor.updateToken(idToken); //!!!! add google token to header
       }

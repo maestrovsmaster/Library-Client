@@ -40,11 +40,12 @@ class ReviewsRepository {
     }
   }
 
-  Future<Result<void, String>> updateReview(String reviewId, int rate, String text) async {
+  Future<Result<void, String>> updateReview(String bookId, String reviewId, int rate, String text) async {
     try {
       final response = await _dio.post(
         '/reviews-updateReview',
         data: {
+          'bookId':bookId,
           'reviewId': reviewId,
           'rate': rate,
           'text': text,
@@ -62,11 +63,14 @@ class ReviewsRepository {
     }
   }
 
-  Future<Result<void, String>> deleteReview(String reviewId) async {
+
+  Future<Result<void, String>> deleteReview(String bookId, String reviewId) async {
     try {
       final response = await _dio.delete(
         '/reviews-deleteReview',
-        queryParameters: {'reviewId': reviewId},
+        queryParameters: {
+          'bookId':bookId,
+          'reviewId': reviewId},
       );
 
       if (response.statusCode == 200) {

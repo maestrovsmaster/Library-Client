@@ -27,7 +27,9 @@ class _ReviewsListState extends State<ReviewsList> {
   @override
   void initState() {
     super.initState();
-    context.read<ReviewsBloc>().add(LoadReviewsEvent(widget.book.id));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ReviewsBloc>().add(LoadReviewsEvent(widget.book.id));
+    });
   }
 
   @override
@@ -41,30 +43,19 @@ class _ReviewsListState extends State<ReviewsList> {
         icon: const Icon(Icons.edit),
         label: const Text("Написати відгук"),
         onPressed: () async {
-          print("Create review ..");
           Review? _myPreviousReview = null;
-          print("Create review ...");
           if(_reviewsList != null){
-            print("Create review 3");
             if(_reviewsList!.isNotEmpty && me != null){
-              print("Create review 32");
               //check if review contains users review and save this review
               final isMyReview = _reviewsList!.any((review) => review.userId == me.userId);
-              print("Create review 33");
               if(isMyReview){
-                print("Create review 34");
                 _myPreviousReview = _reviewsList!.firstWhere((review) => review.userId == me.userId);
               }
-              print("Create review 4");
             }
-            print("Create review 44");
           }
-          print("Create review1");
           if(_myPreviousReview == null) {
-            print("Create review11");
             _createReview(context);
           }else{
-            print("Create review22");
             _editReview(context, _myPreviousReview!);
           }
         },
@@ -141,7 +132,7 @@ class _ReviewsListState extends State<ReviewsList> {
   void _editReview(BuildContext context, Review review) async {
     final result = await showCreateReviewDialog(context, widget.book, review: review);
     if (result != null) {
-      context.read<ReviewsBloc>().add(UpdateReviewEvent(
+      context.read<ReviewsBloc>().add(UpdateReviewEvent( bookId: widget.book.id,
           reviewId: review.id, rate: result.rating.toInt(), text: result.text));
     }
   }
@@ -156,7 +147,7 @@ class _ReviewsListState extends State<ReviewsList> {
           confirmText: "Видалити",
           cancelText: "Відміна",
           onConfirm: () {
-            context.read<ReviewsBloc>().add(DeleteReviewEvent(review.id));
+            context.read<ReviewsBloc>().add(DeleteReviewEvent(widget.book.id,  review.id));
           },
         );
       },

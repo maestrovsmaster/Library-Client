@@ -56,7 +56,7 @@ class ReviewsBloc extends Bloc<ReviewsEvent, ReviewsState> {
   Future<void> _onUpdateReview(UpdateReviewEvent event, Emitter<ReviewsState> emit) async {
     emit(ReviewsLoadingState());
 
-    final result = await repository.updateReview(event.reviewId, event.rate, event.text);
+    final result = await repository.updateReview(event.bookId,  event.reviewId, event.rate, event.text);
     result.when(
       success: (_) async {
         final updated = await repository.getReviewsForBook(_bookId!);
@@ -64,20 +64,28 @@ class ReviewsBloc extends Bloc<ReviewsEvent, ReviewsState> {
         emit(ReviewActionSuccessState("Відгук оновлено", updated));
       },
       failure: (error) => emit(ReviewsErrorState(error)), notFound: () {  },
+
     );
   }
 
   Future<void> _onDeleteReview(DeleteReviewEvent event, Emitter<ReviewsState> emit) async {
     emit(ReviewsLoadingState());
 
-    final result = await repository.deleteReview(event.reviewId);
-    result.when(
-      success: (_) async {
-        final updated = await repository.getReviewsForBook(_bookId!);
-        _currentReviews = updated;
-        emit(ReviewActionSuccessState("Відгук видалено", updated));
-      },
-      failure: (error) => emit(ReviewsErrorState(error)), notFound: () {  },
-    );
+    final result = await repository.deleteReview(event.bookId, event.reviewId);
+
+    if (result.isSuccess) {
+      final updated = await repository.getReviewsForBook(_bookId!);
+      _currentReviews = updated;
+      emit(ReviewActionSuccessState("Відгук видалено", updated));
+    } else if (result.isFailure) {
+      emit(ReviewsErrorState(result.error!));
+    } else if (result.isEmpty) {
+      emit(ReviewsErrorState("Відгук не знайдено"));
+    }
   }
+
+
+
+
+
 }

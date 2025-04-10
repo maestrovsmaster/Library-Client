@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:leeds_library/data/models/book.dart';
+import 'package:leeds_library/presentation/block/book_details/book_details_bloc.dart';
+import 'package:leeds_library/presentation/block/book_details/book_details_event.dart';
+import 'package:leeds_library/presentation/block/book_details/book_details_state.dart';
 import 'package:leeds_library/presentation/screens/book_details/widgets/description_widget.dart';
 
 import 'widgets/availablity_widget.dart';
@@ -16,39 +20,65 @@ class BookDetailsScreen extends StatefulWidget {
 }
 
 class _BookDetailsScreenState extends State<BookDetailsScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<BookDetailsBloc>().add(LoadBooksEvent(widget.book.id));
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Про книгу"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: BookAvailabilityWidget(book: widget.book),
-          )
-        ],
-      ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Padding(
-                padding: EdgeInsets.only(bottom: 56),
-                child: SingleChildScrollView(
-                    child: Column(
-                  children: [
-                    BookDetails(book: widget.book),
-                    SizedBox(height: 20),
+    return BlocBuilder<BookDetailsBloc, BookDetailsState>(
+      builder: (context, state) {
+        if (state is BookInitialState) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
+        if (state is BookNotFoundState) {
+          return const Center(child: Text("Книгу не знайдено"));
+        }
 
-                    DescriptionWidget(description: widget.book.description),
-                  ],
-                ))),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: FooterWidget(book: widget.book)),
-          ],
-        ),
-      ),
+        if (state is BookLoadedState) {
+          final book = state.book;
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("Про книгу"),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: BookAvailabilityWidget(book: book),
+                )
+              ],
+            ),
+            body: SafeArea(
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 56),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          BookDetails(book: book),
+                          const SizedBox(height: 20),
+                          DescriptionWidget(description: book.description),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: FooterWidget(book: book),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return const SizedBox.shrink(); // fallback
+      },
     );
   }
 }

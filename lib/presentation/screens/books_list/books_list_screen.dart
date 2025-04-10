@@ -12,15 +12,31 @@ import 'package:leeds_library/presentation/widgets/barcode_scanner_dialog/barcod
 
 import 'book_item.dart';
 
-class BooksListScreen extends StatelessWidget {
+class BooksListScreen extends StatefulWidget {
+
+  @override
+  State<BooksListScreen> createState() {
+    return _BooksListScreenState();
+  }
+}
+
+class _BooksListScreenState extends State<BooksListScreen> {
+
+  Stream<List<Book>>? _booksStream;
 
   final TextEditingController _searchController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BooksListBloc>().add(LoadBooksEvent());
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<BooksListBloc>()..add(LoadBooksEvent()),
-      child: Scaffold(
+    return  Scaffold(
         appBar: AppBar(
           title: StatefulBuilder(
             builder: (context, setState) {
@@ -84,7 +100,11 @@ class BooksListScreen extends StatelessWidget {
           },
           builder: (context, state) {
 
-            final isStreamActive = state is BooksStreamState;
+            if(state is BooksStreamState){
+              _booksStream = context.read<BooksListBloc>().filteredBooksStream;
+            }
+
+            final isStreamActive = _booksStream != null;
             return !isStreamActive ? Center(child: CircularProgressIndicator()) :
 
               StreamBuilder<List<Book>>(
@@ -137,7 +157,6 @@ class BooksListScreen extends StatelessWidget {
 
           },
         ),
-      ),
     );
   }
 

@@ -1,12 +1,18 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { Timestamp } from 'firebase-admin/firestore';
+import { updateBookReviewStats } from './updateBookReviewStats';
 
 export const updateReview = functions.https.onRequest(async (req, res) => {
   try {
-    const { reviewId, rate, text } = req.body;
+    const { bookId , reviewId, rate, text } = req.body;
+   /* const bookId = Array.isArray(req.query.bookId) ? req.query.bookId[0] : req.query.bookId;
+    if (typeof bookId !== 'string' || typeof reviewId !== 'string') {
+      res.status(400).json({ message: "Invalid or missing bookId/reviewId" });
+      return;
+    }*/
 
-    if (!reviewId || !rate || !text) {
+    if (!bookId ||  !reviewId || !rate || !text) {
       res.status(400).json({ message: "Missing required fields" });
       return;
     }
@@ -20,6 +26,9 @@ export const updateReview = functions.https.onRequest(async (req, res) => {
       text,
       dateUpdated: Timestamp.now(),
     });
+
+
+    await updateBookReviewStats(bookId, postfix);
 
     res.status(200).json({ message: "Review updated successfully" });
   } catch (error) {

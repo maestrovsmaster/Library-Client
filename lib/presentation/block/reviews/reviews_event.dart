@@ -15,14 +15,16 @@ class CreateReviewEvent extends ReviewsEvent {
 }
 
 class UpdateReviewEvent extends ReviewsEvent {
+  final String bookId;
   final String reviewId;
   final int rate;
   final String text;
-  UpdateReviewEvent({required this.reviewId, required this.rate, required this.text});
+  UpdateReviewEvent({ required this.bookId,  required this.reviewId, required this.rate, required this.text});
 }
 
 class DeleteReviewEvent extends ReviewsEvent {
+  final String bookId;
   final String reviewId;
-  DeleteReviewEvent(this.reviewId);
+  DeleteReviewEvent(this.bookId,  this.reviewId);
 }
 

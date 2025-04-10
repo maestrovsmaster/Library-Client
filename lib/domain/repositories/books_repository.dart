@@ -16,6 +16,7 @@ class BooksRepository{
 
   final BehaviorSubject<List<Book>> _booksController =
   BehaviorSubject.seeded([]);
+  Stream<List<Book>> get booksStream => _booksController.stream;
 
   final List<String> catetories = [];
 
@@ -29,8 +30,18 @@ class BooksRepository{
     _listenToFirestore();
   }
 
-  Stream<List<Book>> get booksStream => _booksController.stream;
 
+  Book? _findBookById(List<Book> books, String id) {
+    try {
+      return books.firstWhere((book) => book.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Stream<Book?> getBookStreamById(String id) {
+    return booksStream.map((books) => _findBookById(books, id)).distinct();
+  }
 
 
   void _loadCachedBooks() {
