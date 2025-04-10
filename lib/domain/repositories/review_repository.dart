@@ -78,8 +78,14 @@ class ReviewsRepository {
       } else {
         return Result.failure("Server returned error: ${response.statusCode}");
       }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return Result.failure("Access denied: insufficient permissions.");
+      } else {
+        return Result.failure("Network error: ${e.message}");
+      }
     } catch (e) {
-      return Result.failure("Error deleting review: $e");
+      return Result.failure("Unexpected error: $e");
     }
   }
 

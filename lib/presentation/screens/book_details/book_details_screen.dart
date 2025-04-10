@@ -20,18 +20,26 @@ class BookDetailsScreen extends StatefulWidget {
 }
 
 class _BookDetailsScreenState extends State<BookDetailsScreen> {
-
   @override
   void initState() {
     super.initState();
-    context.read<BookDetailsBloc>().add(LoadBooksEvent(widget.book.id));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BookDetailsBloc>().add(LoadBooksEvent(widget.book.id));
+      context
+          .read<BookDetailsBloc>()
+          .add(IsBookInReadingPlanEvent(widget.book.id));
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BookDetailsBloc, BookDetailsState>(
+    return BlocConsumer<BookDetailsBloc, BookDetailsState>(
+      listener: (context, state) {
+        print("BookDetailsScreen state = $state");
+        if (state is BookLoadedState) {}
+      },
       builder: (context, state) {
+        print("BookDetailsScreen build!!!!! = $state");
         if (state is BookInitialState) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -69,7 +77,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: FooterWidget(book: book),
+                    child: FooterWidget(book: book , isBookInPlan: state.isBookInReadingPlan),
                   ),
                 ],
               ),

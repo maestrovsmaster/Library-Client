@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
@@ -216,6 +218,103 @@ class BooksRepository{
         return Result.failure("Server returned an error: ${response.statusCode}");
       }
     } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return Result.failure("Access denied: insufficient permissions.");
+      } else {
+        return Result.failure("Network error: ${e.message}");
+      }
+    } catch (e) {
+      return Result.failure("Unexpected error: $e");
+    }
+  }
+
+
+  /**
+   * Create a new ReadingPlan.
+   */
+  Future<Result<void, String>> createReadPlan(String bookId, String userId) async {
+    try {
+      final response = await _dio.post(
+        '/readingPlans-createReadingPlan',
+        data: {
+          'bookId': bookId,
+          'userId': userId,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      print("createReadPlan response = ${response.data}");
+
+      if (response.statusCode == 201 && response.data != null) {
+        return Result.success(null);
+      } else {
+        return Result.failure("Server returned an error: ${response.statusCode}");
+      }
+    }  on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return Result.failure("Access denied: insufficient permissions.");
+      } else {
+        return Result.failure("Network error: ${e.message}");
+      }
+    } catch (e) {
+      return Result.failure("Unexpected error: $e");
+    }
+  }
+
+  Future<Result<void, String>> deleteReadingPlan(String bookId, String userId) async {
+    try {
+      final response = await _dio.delete(
+        '/readingPlans-deleteReadingPlan',
+        data: {
+          'bookId':bookId,
+          'userId': userId},
+      );
+
+      if (response.statusCode == 200) {
+        return Result.success(null);
+      } else {
+        return Result.failure("Server returned error: ${response.statusCode}");
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return Result.failure("Access denied: insufficient permissions.");
+      } else {
+        return Result.failure("Network error: ${e.message}");
+      }
+    } catch (e) {
+      return Result.failure("Unexpected error: $e");
+    }
+  }
+
+  /**
+   * isBookInReadingPlan.
+   */
+  Future<Result<bool, String>> isBookInReadingPlan(String bookId, String userId) async {
+    try {
+      final response = await _dio.post(
+        '/readingPlans-isBookInReadingPlan',
+        data: {
+          'bookId': bookId,
+          'userId': userId,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+
+
+      if ((response.statusCode == 200 || response.statusCode == 201) && response.data != null) {
+        try {
+          final raw = response.data['inPlan'];
+          final inPlan = raw is bool ? raw : raw.toString().toLowerCase() ==
+              'true';
+          return Result.success(inPlan);
+        }catch(e){
+          return Result.failure("Server returned an error: ${response.statusCode}");
+        }
+      } else {
+        return Result.failure("Server returned an error: ${response.statusCode}");
+      }
+    }  on DioException catch (e) {
       if (e.response?.statusCode == 403) {
         return Result.failure("Access denied: insufficient permissions.");
       } else {
