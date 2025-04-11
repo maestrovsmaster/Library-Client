@@ -21,6 +21,8 @@ class LoansRepository {
     collectionName:
     "$collectionName-$postfix";
 
+    print("LoansRepository collectionPath = $collectionPath");
+
     _listenToFirestore();
   }
 
@@ -28,13 +30,10 @@ class LoansRepository {
   Stream<List<Loan>> get loansStream => _loansController.stream;
 
   void _listenToFirestore() {
-    final loansRepo = postfix.isEmpty?
-    "loans":
-    "loans-$postfix";
-    //final loansRepo = "loans-$postfix";
+
     bool firstRefreshDone = false;
 
-    firestore.collection(loansRepo)
+    firestore.collection(collectionPath)
         //.where('dateReturned', isNull: true)
         .where('dateReturned', whereIn: [''])
         .snapshots()
@@ -105,7 +104,8 @@ class LoansRepository {
     }
   }
 
-  Future<Result<void, String>> closeLoan({String? loanId, String? bookId}) async {
+  Future<Result<bool, String>> closeLoan({String? loanId, String? bookId}) async {
+    print("Repository Closing loan with id: ${loanId}, bookId: ${bookId}");
     try {
       final response = await _dio.post(
         '/loans-closeLoan',
@@ -115,9 +115,9 @@ class LoansRepository {
         },
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-
+      print("Repository Closing response.statusCode: ${response.statusCode}, ");
       if (response.statusCode == 200) {
-        return Result.success(null);
+        return Result.success(true);
       } else {
         return Result.failure("Server returned an error: ${response.statusCode}");
       }

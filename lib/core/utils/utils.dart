@@ -23,10 +23,12 @@ bool isNumeric(String text) {
   return double.tryParse(text) != null;
 }
 
-DateTime parseDate(dynamic value) {
-  if (value == null) return DateTime.now(); // або throw
+DateTime? parseDate(dynamic value) {
+  if (value == null) return null; // або throw
   if (value is Timestamp) return value.toDate();
-  if (value is String) return DateTime.parse(value);
+  if (value is String){
+    if (value.isEmpty) return null;
+    return DateTime.parse(value);}
   if (value is Map<String, dynamic> && value.containsKey('_seconds')) {
     return DateTime.fromMillisecondsSinceEpoch(value['_seconds'] * 1000);
   }

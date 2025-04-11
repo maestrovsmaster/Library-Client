@@ -17,7 +17,7 @@ class LoanItem extends StatelessWidget {
     final reader = loan.reader;
 
     return InkWell(
-      onTap: () => onTap(loan),
+      onTap: () {},
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Card(
@@ -93,7 +93,7 @@ class LoanItem extends StatelessWidget {
                                     style: const TextStyle(color: Colors.grey)),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Дата видачі: ${_formatDate(loan.dateBorrowed)}',
+                                  'Дата видачі: ${loan.dateBorrowed != null ? _formatDate(loan.dateBorrowed!) : ''}',
                                   style: const TextStyle(
                                       fontSize: 12, color: Colors.black54),
                                 ),
@@ -103,7 +103,7 @@ class LoanItem extends StatelessWidget {
                               width: 130,
                               height: 50,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () => onTap(loan),
                                 child: Text("Повернути", style: TextStyle(fontSize: 11, color: Colors.white)),
                               ),
                             )

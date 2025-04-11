@@ -27,3 +27,12 @@ class LoansErrorState extends LoansListState {
   @override
   List<Object> get props => [message];
 }
+
+class LoanClosed extends LoansListState {}
+
+class LoanCloseError extends LoansListState {
+  final String message;
+  const LoanCloseError(this.message);
+  @override
+  List<Object> get props => [message];
+}

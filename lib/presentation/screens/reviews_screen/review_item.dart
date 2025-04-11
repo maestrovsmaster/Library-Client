@@ -75,7 +75,7 @@ class ReviewItem extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              formatReviewDate(review.date),
+                review.date != null ? formatReviewDate(review.date!) : '',
               style: Theme.of(context)
                   .textTheme
                   .bodySmall

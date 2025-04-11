@@ -7,7 +7,7 @@ class Loan {
   final Map<String, dynamic> book;
   final Map<String, dynamic> reader;
   final String borrowedBy;
-  final DateTime dateBorrowed;
+  final DateTime? dateBorrowed;
   final DateTime? dateReturned;
 
   Loan({
@@ -23,7 +23,7 @@ class Loan {
     'book': book,
     'reader': reader,
     'borrowedBy': borrowedBy,
-    'dateBorrowed': dateBorrowed.toIso8601String(),
+    'dateBorrowed': dateBorrowed?.toIso8601String(),
     'dateReturned': dateReturned != null ? dateReturned?.toIso8601String(): null,
   };
 
@@ -53,7 +53,7 @@ class Loan {
     'book': book,
     'reader': reader,
     'borrowedBy': borrowedBy,
-    'dateBorrowed': dateBorrowed.toIso8601String(),
+    'dateBorrowed': dateBorrowed?.toIso8601String(),
     'dateReturned': dateReturned?.toIso8601String(),
   };
 

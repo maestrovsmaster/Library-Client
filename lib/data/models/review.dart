@@ -8,7 +8,7 @@ class Review {
   final String userAvatarUrl;
   final int rate;
   final String text;
-  final DateTime date;
+  final DateTime? date;
   final DateTime? dateUpdated;
 
   Review({
@@ -30,7 +30,7 @@ class Review {
         'userAvatarUrl': userAvatarUrl,
         'rate': rate,
         'text': text,
-        'date': date.toIso8601String(),
+        'date': date?.toIso8601String(),
         'dateUpdated':
             dateUpdated != null ? dateUpdated!.toIso8601String() : null,
       };

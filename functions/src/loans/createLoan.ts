@@ -17,6 +17,8 @@ export const createLoan = functions.https.onRequest(async (req, res) => {
         const loansCollection = `loans${postfix ? '-' + postfix : ''}`;
         const booksCollection = `books${postfix ? '-' + postfix : ''}`;
 
+        const dateBorrowed = Timestamp.now().toDate().toISOString().split('T')[0];
+
         const loan = {
             book,
             reader: {
@@ -29,8 +31,8 @@ export const createLoan = functions.https.onRequest(async (req, res) => {
             borrowedBy: req.body.borrowedBy || "",
             //dateBorrowed: Timestamp.now(),
             //dateReturned: null,
-            dateBorrowed: Timestamp.fromDate(new Date(req.body.dateBorrowed)),
-            dateReturned: req.body.dateReturned ? Timestamp.fromDate(new Date(req.body.dateReturned)) : null,
+            dateBorrowed: dateBorrowed, // Timestamp.fromDate(new Date(req.body.dateBorrowed)),
+            dateReturned: "", //req.body.dateReturned ? Timestamp.fromDate(new Date(req.body.dateReturned)) : "",
         };
 
         // console.log("createLoan = ",loan)

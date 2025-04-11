@@ -18,4 +18,10 @@ class SearchQueryChangedEvent extends LoansListEvent {
   List<Object> get props => [query];
 }
 
+class CloseLoanEvent extends LoansListEvent {
+  final String loanId;
+  final String bookId;
+  const CloseLoanEvent(this.loanId, this.bookId);
+}
+
 
