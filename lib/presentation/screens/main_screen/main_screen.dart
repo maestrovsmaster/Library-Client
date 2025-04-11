@@ -13,6 +13,7 @@ import 'package:leeds_library/presentation/screens/books_list/books_list_screen.
 import 'package:leeds_library/presentation/screens/finder_screen/finder_screen.dart';
 import 'package:leeds_library/presentation/screens/loans_list_screen/loans_list_screen.dart';
 import 'package:leeds_library/presentation/screens/placeholder_screen/placeholder_screen.dart';
+import 'package:leeds_library/presentation/screens/reading_plans_screen/reading_plans_screen.dart';
 import 'package:leeds_library/presentation/screens/text_recognize_screen.dart';
 import 'package:leeds_library/presentation/widgets/confirm_dialog.dart';
 import 'package:leeds_library/presentation/widgets/notifications_widget.dart';
@@ -66,6 +67,8 @@ class MainScreen extends StatelessWidget {
       case 2:
         return LoansListScreen();
       case 3:
+        return ReadingPlansScreen();
+      case 4:
         return AccountScreen();
       default:
         return Container();

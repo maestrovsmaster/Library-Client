@@ -20,6 +20,7 @@ import 'package:leeds_library/presentation/block/create_loan/create_loan_bloc.da
 import 'package:leeds_library/presentation/block/finder_bloc/finder_bloc.dart';
 import 'package:leeds_library/presentation/block/loans_list/loans_list_bloc.dart';
 import 'package:leeds_library/presentation/block/main_screen/main_screen_block.dart';
+import 'package:leeds_library/presentation/block/reading_plans/reading_plans_bloc.dart';
 import 'package:leeds_library/presentation/block/reviews/reviews_bloc.dart';
 import 'package:leeds_library/presentation/block/text_recognize/text_recognize_block.dart';
 import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
@@ -102,4 +103,5 @@ Future<void> init(
       () => BookDetailsBloc(booksRepository: sl<BooksRepository>()));
 
   sl.registerFactory(() => ReviewsBloc(repository: sl<ReviewsRepository>(), userCubit: sl<UserCubit>()));
+  sl.registerFactory(() => ReadingPlansBloc(booksRepository: sl<BooksRepository>()));
 }

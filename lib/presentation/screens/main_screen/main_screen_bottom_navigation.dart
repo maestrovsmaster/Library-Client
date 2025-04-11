@@ -43,9 +43,15 @@ class MainScreenBottomNavigationBar extends StatelessWidget {
             ),
             _buildNavItem(
               context,
+              iconPath: 'assets/images/collections_bookmark.svg',
+              label: translate('reading_plans'),
+              isSelected: currentIndex == 3,
+            ),
+            _buildNavItem(
+              context,
               iconPath: 'assets/images/ic_account.svg',
               label: translate('tab_settings'),
-              isSelected: currentIndex == 3,
+              isSelected: currentIndex == 4,
             ),
           ],
         )));

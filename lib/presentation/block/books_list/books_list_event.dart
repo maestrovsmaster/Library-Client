@@ -28,3 +28,4 @@ class UpdateBarcode extends BooksListEvent {
   //@override
   //List<Object?> get props => [code];
 }
+

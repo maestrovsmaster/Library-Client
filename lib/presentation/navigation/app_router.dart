@@ -24,6 +24,7 @@ class AppRoutes {
   static const String addReader = '/addReader';
   static const String createLoan = '/createLoan';
   static const String reviews = '/reviews';
+  static const String readingPlans = '/readingPlans';
 }
 
 class AppRouter {

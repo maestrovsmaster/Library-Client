@@ -113,6 +113,7 @@ flutter:
     - assets/images/star_full.svg
     - assets/images/star_half.svg
     - assets/images/default_avatar.png
+    - assets/images/collections_bookmark.svg
 
 
   uses-material-design: true

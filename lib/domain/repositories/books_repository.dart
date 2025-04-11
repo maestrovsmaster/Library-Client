@@ -52,6 +52,8 @@ class BooksRepository{
     }
   }
 
+
+
   void _listenToFirestore() {
 
 
@@ -109,8 +111,43 @@ class BooksRepository{
   }
 
 
+  /*Set<String> readingBookIds = {};
 
+  void listenToReadingPlans(String userId) {
+    firestore
+        .collection('readingPlans-dev')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .listen((snapshot) {
+      final ids = snapshot.docs.map((doc) => doc['bookId'] as String).toSet();
+      readingBookIds = ids;
+    });
+  }*/
 
+  Stream<List<String>> listenToReadingPlans(String userId) {
+    final plans = "readingPlans";
+    final collectionPath = postfix.isEmpty?
+    plans:
+    "$plans-$postfix";
+    return firestore
+        .collection(collectionPath)
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) =>
+        snapshot.docs.map((doc) => doc['bookId'] as String).toList());
+  }
+
+  Stream<List<Book>> myReadingPlanBooksStream(String userId) {
+    return Rx.combineLatest2<List<Book>, List<String>, List<Book>>(
+      booksStream,
+      listenToReadingPlans(userId),
+          (books, readingPlanIds) {
+        return books
+            .where((book) => readingPlanIds.contains(book.id))
+            .toList();
+      },
+    );
+  }
 
 
   Future<Result<Book?, String>> getBookByBarcode(String barcode) async {

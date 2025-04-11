@@ -140,8 +140,6 @@ class _BooksListScreenState extends State<BooksListScreen> {
                       );
 
                       if (result != null) {
-                        //_searchController.value = TextEditingValue(text: result);
-                        // context.read<BooksListBloc>().add(SearchQueryChangedEvent(result));
 
                         context.read<BooksListBloc>().add(UpdateBarcode(book.id, result));
 
