@@ -42,7 +42,7 @@ class LoanItem extends StatelessWidget {
                         color: Colors.grey[300],
                       ),
                       errorWidget: (context, url, error) => Icon(
-                          Icons.book,
+                          Icons.broken_image,
                           size: 40,
                           color: Colors.grey[300]),
                     ),
@@ -53,8 +53,8 @@ class LoanItem extends StatelessWidget {
                         children: [
                           Text(
                             book['author'] ?? '',
-                            maxLines: 2,
                             style: const TextStyle(fontSize: 14),
+                            maxLines: 2,
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -88,8 +88,7 @@ class LoanItem extends StatelessWidget {
                                 Text(reader['name'] ?? '',
                                     style: const TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w600),
-                                ),
+                                        fontWeight: FontWeight.w600)),
                                 const SizedBox(height: 4),
                                 Text(reader['phoneNumber'] ?? '',
                                     style: const TextStyle(color: Colors.grey)),

@@ -1,6 +1,8 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { Timestamp } from 'firebase-admin/firestore';
+import { updateBookAvailability } from '../utils/updateBookAvailability';
+import { notifyInterestedUsers } from '../utils/notifyInterestedUsers';
 
 export const closeLoan = functions.https.onRequest(async (req, res) => {
 
@@ -15,7 +17,7 @@ export const closeLoan = functions.https.onRequest(async (req, res) => {
 
     const postfix = req.query.postfix as string | undefined;
     const loansCollection = `loans${postfix ? '-' + postfix : ''}`;
-    const booksCollection = `books${postfix ? '-' + postfix : ''}`;
+    //const booksCollection = `books${postfix ? '-' + postfix : ''}`;
 
     let loanRef: FirebaseFirestore.DocumentReference;
     let loanData: FirebaseFirestore.DocumentData | undefined;
@@ -55,10 +57,12 @@ export const closeLoan = functions.https.onRequest(async (req, res) => {
     });
 
     if (finalBookId) {
-      await admin.firestore().collection(booksCollection).doc(finalBookId).update({
-        isAvailable: true,
-        updatedAt: Timestamp.now(),
-      });
+     // await admin.firestore().collection(booksCollection).doc(finalBookId).update({
+      //  isAvailable: true,
+        //updatedAt: Timestamp.now(),
+    //  });
+     await updateBookAvailability(finalBookId, true, postfix);
+     await notifyInterestedUsers(finalBookId, postfix);
     }
 
     res.status(200).json({ message: "Loan closed successfully", loanId: loanRef.id });

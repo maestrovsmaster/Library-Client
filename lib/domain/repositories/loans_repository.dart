@@ -9,6 +9,7 @@ class LoansRepository {
   final Dio _dio;
   final FirebaseFirestore firestore;
   final String postfix;
+  final userCubit;
 
   static const String collectionName = "loans";
   String collectionPath = collectionName;
@@ -16,7 +17,7 @@ class LoansRepository {
   final BehaviorSubject<List<Loan>> _loansController =
   BehaviorSubject.seeded([]);
 
-  LoansRepository(this._dio, this.firestore, {this.postfix = ''}){
+  LoansRepository(this._dio, this.firestore, this.userCubit, {this.postfix = ''}){
     collectionPath = postfix.isEmpty?
     collectionName:
     "$collectionName-$postfix";
@@ -118,6 +119,32 @@ class LoansRepository {
       print("Repository Closing response.statusCode: ${response.statusCode}, ");
       if (response.statusCode == 200) {
         return Result.success(true);
+      } else {
+        return Result.failure("Server returned an error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print('Error closing loan: $e');
+      return Result.failure("Network error: $e");
+    }
+  }
+
+  Future<Result<List<Loan>, String>> getMyLoans() async {
+
+    final userId = userCubit.state.userId;
+    print("Repository getMyLoans: ${userId}");
+    try {
+      final response = await _dio.post(
+        '/loans-getMyLoans',
+        data: {
+          if (userId != null) 'userId': userId,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      print("Repository Closing response.statusCode: ${response.statusCode}, ");
+      if (response.statusCode == 200) {
+
+        List<Loan> loans = response.data.map<Loan>((loanData) => Loan.fromJson(loanData)).toList();
+        return Result.success(loans);
       } else {
         return Result.failure("Server returned an error: ${response.statusCode}");
       }

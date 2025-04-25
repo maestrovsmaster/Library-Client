@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:leeds_library/core/di/di_container.dart';
 import 'package:leeds_library/data/models/book.dart';
-import 'package:leeds_library/presentation/block/books_list/books_list_event.dart';
-import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
-import 'package:leeds_library/presentation/block/books_list/books_lists_state.dart';
 import 'package:leeds_library/presentation/block/reading_plans/reading_plans_bloc.dart';
 import 'package:leeds_library/presentation/block/reading_plans/reading_plans_event.dart';
 import 'package:leeds_library/presentation/block/reading_plans/reading_plans_state.dart';
-import 'package:leeds_library/presentation/navigation/app_router.dart';
-import 'package:leeds_library/presentation/widgets/animated_checkmark.dart';
-import 'package:leeds_library/presentation/widgets/barcode_scanner_dialog/barcode_scanner_dialog.dart';
+import 'package:leeds_library/presentation/screens/loans_list_screen/loans_list_screen.dart';
 
 import 'reading_item.dart';
 
@@ -25,11 +18,9 @@ class ReadingPlansScreen extends StatefulWidget {
 
 class _ReadingPlansScreenState extends State<ReadingPlansScreen> {
 
- // Stream<List<Book>>? _booksStream;
 
   List<Book>? _books;
 
-  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -56,9 +47,7 @@ class _ReadingPlansScreenState extends State<ReadingPlansScreen> {
         builder: (context, state) {
 
           if(state is BooksListLoadedState){
-           // _booksStream = context.read<BooksListBloc>().filteredBooksStream;
             _books = state.books;
-
           }
 
           if(state is BooksListErrorState){
@@ -67,7 +56,7 @@ class _ReadingPlansScreenState extends State<ReadingPlansScreen> {
 
           //display list
 
-          return _books == null
+          /*return _books == null
               ? Center(child: CircularProgressIndicator())
               : ListView.builder(
 
@@ -79,43 +68,68 @@ class _ReadingPlansScreenState extends State<ReadingPlansScreen> {
               },
 
             ),
+          );*/
+
+          //show lists
+          
+          if(_books == null){
+            return Text("Немає данних");
+          }
+
+
+          return CustomScrollView(
+            slivers: [
+             /* SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: /*Text(
+                    'Header 1',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),*/
+                  LoansListScreen()
+                ),
+              ),*/
+
+              // Перший список
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) => ReadingItem(
+                        book: _books![index],
+                        onDeleteTap: (book) {
+                          // context.push(AppRoutes.bookDetails, extra: book);
+                        },
+
+                      ),
+                  childCount: _books!.length, // або кількість ваших елементів
+                ),
+              ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'Header 2',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                ),
+              ),
+
+              // Другий список
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) => ReadingItem(
+                        book: _books![index],
+                        onDeleteTap: (book) {
+                          // context.push(AppRoutes.bookDetails, extra: book);
+                        },
+
+                      ),
+                  childCount: _books!.length, // або кількість ваших елементів
+                ),
+              ),
+            ],
           );
 
-          //show list of books
-
-
-
-
-
-         /* final isStreamActive = _booksStream != null;
-          return !isStreamActive ? Center(child: CircularProgressIndicator()) :
-
-          StreamBuilder<List<Book>>(
-            stream: context.read<BooksListBloc>().filteredBooksStream, //state.booksStream,
-            builder: (context, snapshot) {
-
-              if(snapshot.data == null){
-                return Center(child: CircularProgressIndicator());
-              }
-              final books = snapshot.data!;
-
-
-
-              return books.isEmpty
-                  ? Center(child: Text("Нічого не знайдено"))
-                  : ListView.builder(
-
-                itemCount: books.length,
-                itemBuilder: (context, index) => ReadingItem(
-                  book: books[index],
-                  onDeleteTap: (book) {
-                   // context.push(AppRoutes.bookDetails, extra: book);
-                  },
-
-                ),
-              );
-            },
-          );*/
 
 
 

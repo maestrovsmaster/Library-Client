@@ -71,15 +71,15 @@ class _ReviewsListState extends State<ReviewsList> {
           }
         },
         builder: (context, state) {
-          if (_reviewStream == null) {
-            return const Center(child: CircularProgressIndicator());
+          if (_reviewStream == null && state is ReviewsStreamState) {
+            return const  Text("Немає відгуків");// Center(child: CircularProgressIndicator());
           }
 
           return StreamBuilder<List<Review>>(
             stream: _reviewStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData)
-                return const Center(child: CircularProgressIndicator());
+                return const  Text("Немає відгуків");
 
               final reviews = snapshot.data!;
               _reviewsList = reviews;

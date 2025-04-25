@@ -34,7 +34,7 @@ class FinderBloc extends Bloc<FinderEvent, FinderState> {
 
       booksRepository.booksStream.listen((books) {
         _allBooks = books;
-        print("ADSFSDFSFSDFSDFSDfsdf ?????????? books $books");
+        print("ADSFSDFSFSDFSDFSDfsdf ?????????? Allbooks $books");
         _applyFilter();
       });
 

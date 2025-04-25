@@ -30,6 +30,9 @@ class ReviewsBloc extends Bloc<ReviewsEvent, ReviewsState> {
     try {
 
       final stream = repository.watchReviewsForBook(event.bookId);
+     // stream.listen((reviews) {
+     //   print("ReviewsBloc reviews stream= $reviews");
+     // });
       _bookId = event.bookId;
       emit(ReviewsStreamState(stream));
     } catch (e) {
