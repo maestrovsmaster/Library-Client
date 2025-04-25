@@ -12,6 +12,7 @@ import 'package:leeds_library/presentation/screens/barcode_scanner_screen/barcod
 import 'package:leeds_library/presentation/screens/books_list/books_list_screen.dart';
 import 'package:leeds_library/presentation/screens/finder_screen/finder_screen.dart';
 import 'package:leeds_library/presentation/screens/loans_list_screen/loans_list_screen.dart';
+import 'package:leeds_library/presentation/screens/loans_my_screen/my_loans_widget.dart';
 import 'package:leeds_library/presentation/screens/placeholder_screen/placeholder_screen.dart';
 import 'package:leeds_library/presentation/screens/reading_plans_screen/reading_plans_screen.dart';
 import 'package:leeds_library/presentation/screens/text_recognize_screen.dart';

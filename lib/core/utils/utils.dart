@@ -38,3 +38,10 @@ DateTime? parseDate(dynamic value) {
 String formatReviewDate(DateTime date) {
   return DateFormat('dd MMM yyyy', 'uk').format(date);
 }
+
+String formatDate(DateTime date) {
+  return '${date.day.toString().padLeft(2, '0')}.'
+      '${date.month.toString().padLeft(2, '0')}.'
+      '${date.year}';
+}
+

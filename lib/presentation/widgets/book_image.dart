@@ -33,7 +33,7 @@ class BookImage extends StatelessWidget {
             color: Colors.grey[300],
           ),
           errorWidget: (context, url, error) => Icon(
-            Icons.broken_image,
+            Icons.book,
             size: 50,
             color: Colors.grey[400],
           ),

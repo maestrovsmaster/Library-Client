@@ -66,6 +66,7 @@ export const updateUser = functions.https.onRequest((req, res) => {
                     phoneNumber,
                     phoneNumberAlt: phoneNumberAlt || null,
                     updatedAt: Timestamp.now(),
+                    readerId:""
                 };
 
                 await userRef.update(updatedUser);
@@ -102,6 +103,10 @@ export const updateUser = functions.https.onRequest((req, res) => {
                         });
 
                         functions.logger.info(`Reader created for user ${userId} with ID ${newReaderRef.id}`);
+
+                        updatedUser.readerId = newReaderRef.id;
+                    }else{
+                        updatedUser.readerId = existingReaderQuery.docs[0].id; 
                     }
                 }
 

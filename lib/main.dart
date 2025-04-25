@@ -23,6 +23,11 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  if (envConfig.useFirestoreEmulator == 'true') {
+    await _connectToFirebaseEmulator();
+  }
+
+  /**/
 
   //Setup notifications
   // Setup notifications
@@ -45,12 +50,10 @@ Future<void> main() async {
 
   // Load environment variables and determine mock data source
 
-  if (envConfig.useFirestoreEmulator == 'true') {
-    await _connectToFirebaseEmulator();
-  }
+
 
   // Initialize dependencies
-  await di.init(baseUrl: envConfig.baseUrl, postfix: envConfig.postfix);
+  await di.init(baseUrl: envConfig.baseUrl, postfix: envConfig.postfix, booksPostfix: envConfig.booksPostfix);
 
   // Initialize localization
   final delegate = await _initLocalization();
@@ -73,14 +76,16 @@ Future<void> _initHive() async {
 
 Future<EnvConfig> _initEnv() async {
 
-  var envConfig = EnvConfig('http://192.168.0.25:5001/library-541e4/us-central1', '-dev', 'true');
+  var envConfig = EnvConfig('http://192.168.0.25:5001/library-541e4/us-central1', '-dev', '-dev', 'true');
 
   try {
     await dotenv.load(fileName: ".env");
     final baseUrl = dotenv.env['BASE_URL'] ?? 'http://192.168.0.25:5001/library-541e4/us-central1';
     final postfix = dotenv.env['POSTFIX'] ?? '';
+    final booksPostfix = dotenv.env['BOOX_COLLECTION_POSTFIX'] ?? '';
+
     final useFirestoreEmulator = dotenv.env['USE_FIRESTORE_EMULATOR'] ?? 'true';
-    envConfig = EnvConfig(baseUrl, postfix,useFirestoreEmulator);
+    envConfig = EnvConfig(baseUrl, postfix,booksPostfix , useFirestoreEmulator);
   } catch (e) {
     if (kDebugMode) {
       debugPrint("Warning: .env file not found. Using default values.");

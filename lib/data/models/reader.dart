@@ -14,6 +14,7 @@ class Reader {
   });
 
   factory Reader.fromMap(Map<String, dynamic> json, String docId) {
+    print("ReaderMapdoc = $docId $json ");
     return Reader(
       id: docId,
       email: json['email'] ?? '',
@@ -25,6 +26,7 @@ class Reader {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'email': email,
       'name': name,
       'phoneNumber': phoneNumber,

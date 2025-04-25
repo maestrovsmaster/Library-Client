@@ -32,18 +32,18 @@ export const verifyToken = functions.https.onRequest((req, res) => {
   
           const collectionUsers = `users${postfix ? '-' + postfix : ''}`;
           const collectionReaders = `readers${postfix ? '-' + postfix : ''}`;
-          const collectionRoles = `roles${postfix ? '-' + postfix : ''}`;
+          //const collectionRoles = `roles${postfix ? '-' + postfix : ''}`;
           const collectionBans = `userBans${postfix ? '-' + postfix : ''}`;
   
           const userRef = admin.firestore().collection(collectionUsers).doc(user_id);
           let userDoc = await userRef.get();
   
           // Role logic
-          let role = 'reader';
-          const roleDoc = await admin.firestore().collection(collectionRoles).doc(user_id).get();
+          
+          /*const roleDoc = await admin.firestore().collection(collectionRoles).doc(user_id).get();
           if (roleDoc.exists && roleDoc.data()?.role) {
             role = roleDoc.data()!.role;
-          }
+          }*/
   
           let userData: any;
   
@@ -82,6 +82,8 @@ export const verifyToken = functions.https.onRequest((req, res) => {
   
           } else {
             // Створення нового користувача
+            let role = 'reader';
+
             userData = {
               userId: user_id,
               email: email,
@@ -120,7 +122,7 @@ export const verifyToken = functions.https.onRequest((req, res) => {
           }
   
           // OK: повертаємо профіль
-          userData.role = role;
+         // userData.role = role;
           res.status(200).json(userData);
   
         } catch (error) {

@@ -46,7 +46,7 @@ class CreateLoanBloc extends Bloc<CreateLoanEvent, CreateLoanState> {
       AddLoanEvent event, Emitter<CreateLoanState> emit) async {
     try{
       final loan = Loan(
-        book: event.book.toJson(),
+        book: event.book,//.toJson(),
         reader: event.reader.toMap(),
         borrowedBy: event.reader.name,
         dateBorrowed: DateTime.now(),

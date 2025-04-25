@@ -32,7 +32,7 @@ class LoanItem extends StatelessWidget {
                 child: Row(
                   children: [
                     CachedNetworkImage(
-                      imageUrl: book['imageUrl'] ?? '',
+                      imageUrl:  book.imageUrl ?? "", //book['imageUrl'] ?? '',
                       width: 50,
                       height: 80,
                       fit: BoxFit.cover,
@@ -52,13 +52,13 @@ class LoanItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            book['author'] ?? '',
+                            book.author,//['author'] ?? '',
                             maxLines: 2,
                             style: const TextStyle(fontSize: 14),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            book['title'] ?? '',
+                            book.title,//['title'] ?? '',
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),

@@ -20,15 +20,15 @@ class ReadingItem extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
         child: SizedBox(
-            height: 146,
+            height: 116,
             child: Padding(
                 padding:
                     EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
                 child: Stack(children: [
                   Row(children: [
                     SizedBox(
-                      width: 80,
-                      height: 130,
+                      width: 50,
+                      height: 80,
                       child: BookImage(imageUrl: book.imageUrl),
                     ),
                     SizedBox(width: 16),
@@ -64,15 +64,16 @@ class ReadingItem extends StatelessWidget {
                       ),
                     )),
                   ]),
-                  Align(
+                 /* Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: EdgeInsets.only(right: 8),
                         child:  IconButton(
                           icon: Icon(Icons.delete_forever),
                           onPressed: () => onDeleteTap(book),
+                          color: AppColors.tabInactive,
                         ),
-                      )),
+                      )),*/
                 ]))));
   }
 }

@@ -7,6 +7,7 @@ class AppUser {
   final String photoUrl;
   final String role;
   final String userId;
+  final String? readerId;
 
   AppUser({
     required this.email,
@@ -17,6 +18,7 @@ class AppUser {
     required this.photoUrl,
     required this.role,
     required this.userId,
+    this.readerId,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class AppUser {
       photoUrl: json['photoUrl'] ?? '',
       role: json['role'] ?? '',
       userId: json['userId'] ?? '',
+      readerId: json['readerId'] ?? '',
     );
   }
 
@@ -44,6 +47,7 @@ class AppUser {
       'phoneNumber': phoneNumber,
       'phoneNumberAlt': phoneNumberAlt,
       'photoUrl': photoUrl,
+      //'readerId': readerId,
     };
   }
 
@@ -61,6 +65,7 @@ class AppUser {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       phoneNumberAlt: phoneNumberAlt ?? this.phoneNumberAlt,
       photoUrl: this.photoUrl,
+      readerId: this.readerId,
     );
   }
 }

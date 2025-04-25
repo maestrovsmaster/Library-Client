@@ -71,6 +71,25 @@ class Book {
     );
   }
 
+  factory Book.fromMap(Map<String, dynamic> map){
+   return Book(
+     id: map['id'] ?? '',
+     title: map['title'] ?? '',
+     author: map['author'] ?? '',
+     genre: map['genre'] ?? '',
+     publisher: map['publisher'] ?? '',
+     description: map['description'] ?? '',
+     imageUrl: map['imageUrl'] ?? '',
+     barcode: map['barcode'] ?? '',
+     isAvailable: map['isAvailable'] ?? true,
+     averageRating: 0,//(map['averageRating'] != null ?? map['averageRating'] ?? 0),
+     reviewsCount: 0,//map['reviewsCount'] ?? 0,
+   );
+  }
+
+
+
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -96,7 +115,6 @@ class Book {
 
     return Book(
       id: doc.id,
-      // ID беремо з самого документа Firestore
       title: data['title'] ?? '',
       author: data['author'] ?? '',
       genre: data['genre'] ?? '',

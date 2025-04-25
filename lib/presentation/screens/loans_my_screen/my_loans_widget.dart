@@ -6,14 +6,14 @@ import 'package:leeds_library/presentation/block/loans_my_bloc/my_loans_event.da
 import 'package:leeds_library/presentation/block/loans_my_bloc/my_loans_state.dart';
 import 'package:leeds_library/presentation/screens/loans_list_screen/loan_item.dart';
 
-class LoansListScreen extends StatefulWidget {
-  const LoansListScreen({super.key});
+class MyLoansWidget extends StatefulWidget {
+  const MyLoansWidget({super.key});
 
   @override
-  State<LoansListScreen> createState() => _LoansListScreenState();
+  State<MyLoansWidget> createState() => _LoansListScreenState();
 }
 
-class _LoansListScreenState extends State<LoansListScreen> {
+class _LoansListScreenState extends State<MyLoansWidget> {
   List<Loan>? _loans;
 
   @override

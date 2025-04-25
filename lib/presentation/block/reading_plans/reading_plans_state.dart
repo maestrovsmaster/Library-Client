@@ -1,6 +1,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:leeds_library/data/models/book.dart';
+import 'package:leeds_library/data/models/loan.dart';
 
 abstract class ReadingPlansState extends Equatable {
   const ReadingPlansState();
@@ -14,7 +15,8 @@ class BooksInitialState extends ReadingPlansState {}
 
 class BooksListLoadedState extends ReadingPlansState {
   final List<Book> books;
-  const BooksListLoadedState(this.books);
+  final List<Loan> loans;
+  const BooksListLoadedState(this.books, this.loans);
 
   @override
   List<Object> get props => [books];

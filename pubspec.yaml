@@ -115,6 +115,7 @@ flutter:
     - assets/images/star_half.svg
     - assets/images/default_avatar.png
     - assets/images/collections_bookmark.svg
+    - assets/images/google_icon.png
 
 
   uses-material-design: true

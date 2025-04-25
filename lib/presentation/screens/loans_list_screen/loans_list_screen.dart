@@ -102,7 +102,7 @@ class _LoansListScreenState extends State<LoansListScreen> {
                     loan: loans[index],
                     onTap: (loan) {
                       // context.read<LoansListBloc>().add(LoanSelectedEvent(loan));
-                      context.read<LoansListBloc>().add(CloseLoanEvent(loan.id!, loan.book['id']));
+                      context.read<LoansListBloc>().add(CloseLoanEvent(loan.id!, loan.book.id));
                     },
                   ),
                 );

@@ -36,7 +36,7 @@ final sl = GetIt.instance;
 /// generator - mock data from generator
 Future<void> init(
     {String baseUrl = 'http://192.168.0.25:5001/library-541e4/us-central1',
-    String postfix = ''}) async {
+    String postfix = '' , booksPostfix = ''}) async {
   final itemBox = await Hive.openBox<Book>('books');
   sl.registerLazySingleton<Box<Book>>(() => itemBox);
 
@@ -57,7 +57,7 @@ Future<void> init(
       SignInRepository(sl<Dio>(), sl<UserCubit>(), sl<AuthInterceptor>()));
 
   sl.registerLazySingleton(
-      () => BooksRepository(sl<Dio>(), firebase, itemBox, postfix: postfix));
+      () => BooksRepository(sl<Dio>(), firebase, itemBox, postfix: postfix, booksPostfix: booksPostfix ));
   sl.registerLazySingleton(
       () => ReadersRepository(sl<Dio>(), firebase, postfix: postfix));
   sl.registerLazySingleton(() =>
@@ -106,7 +106,7 @@ Future<void> init(
   sl.registerFactory(() => ReviewsBloc(
       repository: sl<ReviewsRepository>(), userCubit: sl<UserCubit>()));
   sl.registerFactory(
-      () => ReadingPlansBloc(booksRepository: sl<BooksRepository>()));
+      () => ReadingPlansBloc(booksRepository: sl<BooksRepository>(), repository: sl<LoansRepository>()));
 
   sl.registerFactory(() => MyLoansListBloc(repository: sl<LoansRepository>()));
 }

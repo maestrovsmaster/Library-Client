@@ -21,6 +21,8 @@ export const createLoan = functions.https.onRequest(async (req, res) => {
 
         const dateBorrowed = Timestamp.now().toDate().toISOString().split('T')[0];
 
+        console.log("reader = ", reader);
+
         const loan = {
             book,
             reader: {

@@ -12,6 +12,7 @@ class BooksRepository{
   final FirebaseFirestore firestore;
   final Box<Book> bookBox;
   final String postfix;
+  final String booksPostfix;
 
   static const String collectionName = "books";
   String collectionPath = collectionName;
@@ -22,7 +23,7 @@ class BooksRepository{
 
   final List<String> catetories = [];
 
-  BooksRepository(this._dio, this.firestore, this.bookBox, {this.postfix = ''}){
+  BooksRepository(this._dio, this.firestore, this.bookBox, {this.postfix = '' , this.booksPostfix = ''}){
 
     collectionPath = postfix.isEmpty?
     collectionName:
@@ -53,11 +54,49 @@ class BooksRepository{
   }
 
 
+  bool _firstRefreshDone = false;
 
   void _listenToFirestore() {
+    final bookCollectionPath = booksPostfix.isEmpty
+        ? collectionName
+        : "$collectionName-$booksPostfix";
+
+    print("BooksRepository collectionPath = $bookCollectionPath");
+
+    firestore.collection(bookCollectionPath).snapshots().listen((snapshot) {
+      print("BooksRepository listen");
+      if (snapshot.metadata.isFromCache && !_firstRefreshDone) {
+        print("BooksRepository return");
+        return;
+      }
+
+      if (!snapshot.metadata.isFromCache) {
+        print("BooksRepository cache");
+        _firstRefreshDone = true;
+      }
+
+      final books = snapshot.docs.map((doc) => Book.fromFirestore(doc)).toList();
+      print("BooksRepository books $books");
+      for (var book in books) {
+        if (!catetories.contains(book.genre)) {
+          catetories.add(book.genre);
+        }
+      }
+
+      _booksController.add(books);
+      _cacheBooks(books);
+    });
+  }
 
 
-    firestore.collection(collectionPath).snapshots().listen((snapshot) {
+/*
+  void _listenToFirestore() {
+
+    final bookCollectionPath = booksPostfix.isEmpty?
+    collectionName:
+    "$collectionName-$booksPostfix";
+
+    firestore.collection(bookCollectionPath).snapshots().listen((snapshot) {
       if (snapshot.metadata.isFromCache &&
           !snapshot.metadata.hasPendingWrites) {
         return;
@@ -103,7 +142,7 @@ class BooksRepository{
         _cacheBooks(books);
       }
     });
-  }
+  }*/
 
   void _cacheBooks(List<Book> books) async {
     await bookBox.clear();

@@ -16,11 +16,14 @@ export const getMyLoans = functions.https.onRequest(async (req, res) => {
         console.log("getMyLoans 2");
         const postfix = req.query.postfix as string | undefined;
         const collectionName = `loans${postfix ? '-' + postfix : ''}`;
-
+        console.log("getMyLoans 2 collectionName ",collectionName);
+        console.log("getMyLoans 2 userId ",userId);
         const docRef = admin.firestore().collection(collectionName).where('reader.id', '==', userId);
         const docSnapshot = await docRef.get();
+        console.log("getMyLoans 2 docSnapshot ",docSnapshot.docs);
         if (docSnapshot.empty) {
             res.status(200).json(null);
+            return;
 
         }
 

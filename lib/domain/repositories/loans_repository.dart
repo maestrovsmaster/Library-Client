@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:leeds_library/data/models/loan.dart';
 import 'package:leeds_library/data/net/result.dart';
+import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
 import 'package:rxdart/rxdart.dart';
 
 
@@ -9,7 +10,7 @@ class LoansRepository {
   final Dio _dio;
   final FirebaseFirestore firestore;
   final String postfix;
-  final userCubit;
+  final  userCubit;
 
   static const String collectionName = "loans";
   String collectionPath = collectionName;
@@ -31,12 +32,35 @@ class LoansRepository {
   Stream<List<Loan>> get loansStream => _loansController.stream;
 
   void _listenToFirestore() {
+    bool firstRefreshDone = false;
+
+    firestore.collection(collectionPath).snapshots().listen((snapshot) {
+      // Якщо перше оновлення ще не з мережі — пропускаємо кеш
+      if (snapshot.metadata.isFromCache && !firstRefreshDone) {
+        return;
+      }
+
+      if (!snapshot.metadata.isFromCache) {
+        firstRefreshDone = true;
+      }
+
+      final loans = snapshot.docs
+          .map((doc) => Loan.fromFirestore(doc))
+          .where((loan) => loan.dateReturned == null || loan.dateReturned == '')
+          .toList();
+
+      _loansController.add(loans);
+    });
+  }
+
+
+  /*void _listenToFirestore() {
 
     bool firstRefreshDone = false;
 
     firestore.collection(collectionPath)
-        //.where('dateReturned', isNull: true)
-        .where('dateReturned', whereIn: [''])
+        //.where('dateReturned', whereIn: [''])
+        //.where('dateReturned', isEqualTo: '')
         .snapshots()
         .listen((snapshot) {
       // Якщо це кеш, і перше оновлення ще не отримано з мережі — ігноруємо
@@ -78,7 +102,7 @@ class LoansRepository {
         _loansController.add(loans);
       }
     });
-  }
+  }*/
 
 
   Future<Result<Loan?, String>> createLoan(Loan loan) async {
@@ -130,7 +154,7 @@ class LoansRepository {
 
   Future<Result<List<Loan>, String>> getMyLoans() async {
 
-    final userId = userCubit.state.userId;
+    final userId = userCubit.state.readerId;
     print("Repository getMyLoans: ${userId}");
     try {
       final response = await _dio.post(
@@ -140,9 +164,9 @@ class LoansRepository {
         },
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-      print("Repository Closing response.statusCode: ${response.statusCode}, ");
+      print("Repository loans response.statusCode: ${response.statusCode}, ");
       if (response.statusCode == 200) {
-
+        print("Repository loans response: ${response.data}, ");
         List<Loan> loans = response.data.map<Loan>((loanData) => Loan.fromJson(loanData)).toList();
         return Result.success(loans);
       } else {
@@ -151,6 +175,7 @@ class LoansRepository {
     } catch (e) {
       print('Error closing loan: $e');
       return Result.failure("Network error: $e");
+
     }
   }
 
