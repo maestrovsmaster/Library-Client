@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:leeds_library/presentation/navigation/app_router.dart';
 
 import 'widgets/banner_widget.dart';
 import 'widgets/genre_section_widget.dart';
@@ -31,7 +32,8 @@ class LibraryScreen extends StatelessWidget {
             subtitle: 'Натисніть, щоб переглянути',
             onTap: () {
               // Навігація
-              context.push('/genre/family');
+             // context.push('/genre/family');
+              context.push(AppRoutes.genre, extra: "Українська Класика");
             },
           ),
           GenreSectionWidget(genreTitle: 'Дитячі', genreId: 'Казки'),
@@ -42,7 +44,7 @@ class LibraryScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: () {
-                context.push('/genres');
+                context.push(AppRoutes.categories);
               },
               child: Text('Переглянути всі жанри'),
             ),

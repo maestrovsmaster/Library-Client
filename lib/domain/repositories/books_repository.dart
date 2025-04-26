@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:leeds_library/data/models/book.dart';
+import 'package:leeds_library/data/models/category.dart';
 import 'package:leeds_library/data/net/result.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -22,6 +24,19 @@ class BooksRepository{
   Stream<List<Book>> get booksStream => _booksController.stream;
 
   final List<String> catetories = [];
+
+  List<BookCategory> getCategories() {
+    final books = _booksController.valueOrNull ?? [];
+
+    final uniqueGenres = <String>{};
+    for (var book in books) {
+      if (book.genre.isNotEmpty) {
+        uniqueGenres.add(book.genre.trim());
+      }
+    }
+
+    return uniqueGenres.map((genre) => BookCategory(genre)).toList();
+  }
 
   BooksRepository(this._dio, this.firestore, this.bookBox, {this.postfix = '' , this.booksPostfix = ''}){
 

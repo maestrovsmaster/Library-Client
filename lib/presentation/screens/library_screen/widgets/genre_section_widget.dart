@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:leeds_library/core/di/di_container.dart';
 import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/domain/repositories/books_repository.dart';
+import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:leeds_library/presentation/screens/library_screen/widgets/book_tile.dart';
 
 class GenreSectionWidget extends StatelessWidget {
@@ -27,7 +28,8 @@ class GenreSectionWidget extends StatelessWidget {
             Spacer(),
             TextButton(
               onPressed: () {
-                context.push('/genre/$genreId');
+                //context.push('/genre/$genreId');
+                context.push(AppRoutes.genre, extra: genreId);
               },
               child: Text("перейти>", style: Theme.of(context).textTheme.bodyMedium),
             )
@@ -37,7 +39,7 @@ class GenreSectionWidget extends StatelessWidget {
         SizedBox(
           height: 200,
           child: StreamBuilder<List<Book>>(
-            stream: sl<BooksRepository>().booksStream,//context.read<BooksRepository>().booksStream,
+            stream: sl<BooksRepository>().booksStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
               final books = snapshot.data!

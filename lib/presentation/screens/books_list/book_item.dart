@@ -78,6 +78,7 @@ class BookItem extends StatelessWidget {
                       ),
                     )),
                   ]),
+                  if (isUserAdmin)
                   Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
