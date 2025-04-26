@@ -8,12 +8,14 @@ import 'package:leeds_library/presentation/widgets/rating_widget.dart';
 
 class BookItem extends StatelessWidget {
   final Book book;
+  final isUserAdmin;
   final Function(Book) onTap;
   final Function(Book) onScanTap;
 
   const BookItem(
       {Key? key,
       required this.book,
+      required this.isUserAdmin,
       required this.onTap,
       required this.onScanTap})
       : super(key: key);
@@ -63,6 +65,7 @@ class BookItem extends StatelessWidget {
                               style: TextStyle(
                                   color: AppColors.actionReturnColor)),
                           SizedBox(height: 4),
+                          if (isUserAdmin)
                           SizedBox(
                             height: 10,
                             width: 10,

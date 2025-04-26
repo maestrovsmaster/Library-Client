@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:leeds_library/core/theme/app_colors.dart';
 import 'package:leeds_library/presentation/widgets/navigation/nav_item.dart';
 
-class MainScreenBottomNavigationBar extends StatelessWidget {
-  final userIsAdmin;
+class AdminBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-
-  const MainScreenBottomNavigationBar({
+  const AdminBottomNavigationBar({
     super.key,
-    required this.userIsAdmin,
     required this.currentIndex,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return  SafeArea(
         child: SizedBox(
             height: 86,
-            child: BottomNavigationBar(
+            child: Container(color: AppColors.yellow,
+                child:
+            BottomNavigationBar(
               currentIndex: currentIndex,
               showUnselectedLabels: true,
               onTap: onTap,
               items: [
                 buildNavItem(
                   context,
-                  iconPath: 'assets/images/ic_home.svg',
-                  label: "Home",
+                  iconPath: 'assets/images/ic_scan.svg',
+                  label: translate('tab_scan'),
                   isSelected: currentIndex == 0,
                 ),
                 buildNavItem(
@@ -39,29 +37,16 @@ class MainScreenBottomNavigationBar extends StatelessWidget {
                   label: translate('tab_collection'),
                   isSelected: currentIndex == 1,
                 ),
-
                 buildNavItem(
                   context,
-                  iconPath: 'assets/images/collections_bookmark.svg',
-                  label: translate('reading_plans'),
+                  iconPath: 'assets/images/ic_book.svg',
+                  label: translate('tab_reservations'),
                   isSelected: currentIndex == 2,
                 ),
-                buildNavItem(
-                  context,
-                  iconPath: 'assets/images/ic_account.svg',
-                  label: translate('tab_settings'),
-                  isSelected: currentIndex == 3,
-                ),
-                if(userIsAdmin)
-                buildNavItem(
-                  context,
-                  iconPath: 'assets/images/ic_admin_panel.svg',
-                  label:"Admin",
-                  isSelected: currentIndex == 4,
-                  color: AppColors.redSoft,
-                ),
-              ],
-            )));
-  }
 
+
+              ],
+            ))));
+  }
 }
+

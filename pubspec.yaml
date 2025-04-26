@@ -116,6 +116,9 @@ flutter:
     - assets/images/default_avatar.png
     - assets/images/collections_bookmark.svg
     - assets/images/google_icon.png
+    - assets/images/ic_admin_panel.svg
+    - assets/images/img_family.png
+    - assets/images/ic_home.svg
 
 
   uses-material-design: true

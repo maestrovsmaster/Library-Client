@@ -83,85 +83,19 @@ class BooksRepository{
         }
       }
 
+      print("BooksRepository catetories $catetories");
+
       _booksController.add(books);
       _cacheBooks(books);
     });
   }
 
 
-/*
-  void _listenToFirestore() {
-
-    final bookCollectionPath = booksPostfix.isEmpty?
-    collectionName:
-    "$collectionName-$booksPostfix";
-
-    firestore.collection(bookCollectionPath).snapshots().listen((snapshot) {
-      if (snapshot.metadata.isFromCache &&
-          !snapshot.metadata.hasPendingWrites) {
-        return;
-      }
-      bool hasChanges = false;
-      var books = [..._booksController.value];
-
-      for (var change in snapshot.docChanges) {
-        var book = Book.fromFirestore(change.doc);
-
-        final category = book.genre;
-        if (!catetories.contains(category)) {
-          catetories.add(category);
-        }
-
-        if (change.type == DocumentChangeType.added) {
-          if (!books.any((b) => b.id == book.id)) {
-            books.add(book);
-            hasChanges = true;
-          }
-        } else if (change.type == DocumentChangeType.removed) {
-          books.removeWhere((b) => b.id == book.id);
-          hasChanges = true;
-        } else if (change.type == DocumentChangeType.modified) {
-          var index = books.indexWhere((b) => b.id == book.id);
-          print("DocumentChangeType.modified = $index");
-          if (index != -1 &&
-              (books[index].barcode != book.barcode ||
-                  books[index].isAvailable != book.isAvailable ||
-                  books[index].averageRating != book.averageRating ||
-                  books[index].reviewsCount != book.reviewsCount
-              )) {
-            books[index] = book;
-            hasChanges = true;
-          }
-        }
-      }
-
-
-
-      if (hasChanges) {
-        _booksController.add(books);
-        _cacheBooks(books);
-      }
-    });
-  }*/
-
   void _cacheBooks(List<Book> books) async {
     await bookBox.clear();
     await bookBox.addAll(books);
   }
 
-
-  /*Set<String> readingBookIds = {};
-
-  void listenToReadingPlans(String userId) {
-    firestore
-        .collection('readingPlans-dev')
-        .where('userId', isEqualTo: userId)
-        .snapshots()
-        .listen((snapshot) {
-      final ids = snapshot.docs.map((doc) => doc['bookId'] as String).toSet();
-      readingBookIds = ids;
-    });
-  }*/
 
   Stream<List<String>> listenToReadingPlans(String userId) {
     final plans = "readingPlans";

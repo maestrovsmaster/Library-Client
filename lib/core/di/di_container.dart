@@ -13,6 +13,7 @@ import 'package:leeds_library/domain/repositories/sign_in_repository.dart';
 import 'package:leeds_library/presentation/block/account/account_block.dart';
 import 'package:leeds_library/presentation/block/add_book/add_book_bloc.dart';
 import 'package:leeds_library/presentation/block/add_reader/add_reader_bloc.dart';
+import 'package:leeds_library/presentation/block/admin_dashboard_bloc/admin_dashboard_bloc.dart';
 import 'package:leeds_library/presentation/block/barcode_scanner/barcode_scanner_block.dart';
 import 'package:leeds_library/presentation/block/book_details/book_details_bloc.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
@@ -109,4 +110,7 @@ Future<void> init(
       () => ReadingPlansBloc(booksRepository: sl<BooksRepository>(), repository: sl<LoansRepository>()));
 
   sl.registerFactory(() => MyLoansListBloc(repository: sl<LoansRepository>()));
+  //AdminDashboardBloc
+  sl.registerFactory(() => AdminDashboardBloc());
+
 }

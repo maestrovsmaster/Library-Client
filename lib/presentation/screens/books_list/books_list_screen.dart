@@ -6,6 +6,7 @@ import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/presentation/block/books_list/books_list_event.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_state.dart';
+import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
 import 'package:leeds_library/presentation/navigation/app_router.dart';
 import 'package:leeds_library/presentation/widgets/animated_checkmark.dart';
 import 'package:leeds_library/presentation/widgets/barcode_scanner_dialog/barcode_scanner_dialog.dart';
@@ -22,6 +23,8 @@ class BooksListScreen extends StatefulWidget {
 
 class _BooksListScreenState extends State<BooksListScreen> {
 
+  final userCubit =  sl<UserCubit>();
+
   Stream<List<Book>>? _booksStream;
 
   final TextEditingController _searchController = TextEditingController();
@@ -36,6 +39,10 @@ class _BooksListScreenState extends State<BooksListScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final role = userCubit.state?.role ?? "reader";
+    final isAdmin = (role == "admin" ||  role == "librarian") ?? false;
+
     return  Scaffold(
         appBar: AppBar(
           title: StatefulBuilder(
@@ -129,6 +136,7 @@ class _BooksListScreenState extends State<BooksListScreen> {
                   itemCount: books.length,
                   itemBuilder: (context, index) => BookItem(
                     book: books[index],
+                    isUserAdmin: isAdmin,
                     onTap: (book) {
                       context.push(AppRoutes.bookDetails, extra: book);
                     },

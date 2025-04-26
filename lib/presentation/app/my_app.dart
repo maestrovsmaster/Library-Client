@@ -6,6 +6,7 @@ import 'package:leeds_library/core/di/di_container.dart' as di;
 import 'package:leeds_library/presentation/block/account/account_block.dart';
 import 'package:leeds_library/presentation/block/add_book/add_book_bloc.dart';
 import 'package:leeds_library/presentation/block/add_reader/add_reader_bloc.dart';
+import 'package:leeds_library/presentation/block/admin_dashboard_bloc/admin_dashboard_bloc.dart';
 import 'package:leeds_library/presentation/block/barcode_scanner/barcode_scanner_block.dart';
 import 'package:leeds_library/presentation/block/book_details/book_details_bloc.dart';
 import 'package:leeds_library/presentation/block/books_list/books_lists_block.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<ReviewsBloc>()..add(InitialEvent())),
         BlocProvider(create: (context) => di.sl<ReadingPlansBloc>()),
         BlocProvider(create: (context) => di.sl<MyLoansListBloc>()),
+        BlocProvider(create: (context) => di.sl<AdminDashboardBloc>()),
 
 
       ],
