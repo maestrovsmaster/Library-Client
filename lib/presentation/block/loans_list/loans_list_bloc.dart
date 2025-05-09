@@ -18,6 +18,8 @@ class LoansListBloc extends Bloc<LoansListEvent, LoansListState> {
   LoansListBloc({required this.repository}) : super(LoansInitialState()) {
     on<LoadLoansEvent>(_onLoadBooks);
     on<SearchQueryChangedEvent>(_onSearchQueryChanged);
+    on<CloseLoanEvent>(_onCloseLoan);
+
   }
 
   Future<void> _onLoadBooks(LoadLoansEvent event, Emitter<LoansListState> emit) async {
@@ -41,18 +43,21 @@ class LoansListBloc extends Bloc<LoansListEvent, LoansListState> {
   }
 
   void _applyFilter() {
-    final query = _currentQuery.toLowerCase().trim();
 
-   /* final filtered = query.isEmpty
-        ? _allLoans
-        : _allLoans.where((loan) {
-      return loan.title.toLowerCase().contains(query) ||
-          loan.author.toLowerCase().contains(query) ||
-          loan.barcode.toLowerCase() == query;
-    }).toList();
-
-    _filteredBooksController.add(filtered);*/
     _filteredBooksController.add(_allLoans);
+  }
+
+
+  Future<void> _onCloseLoan(CloseLoanEvent event, Emitter<LoansListState> emit) async {
+    print("Closing loan with id: ${event.loanId}, bookId: ${event.bookId}");
+    final result = await repository.closeLoan(loanId: event.loanId, bookId: event.bookId);
+    print("Close loan result: ${result.isSuccess}");
+
+    if (result.isSuccess) {
+      emit(LoanClosed());
+    } else {
+      emit(LoanCloseError("Не вдалося закрити позицію"));
+    }
   }
 
   @override

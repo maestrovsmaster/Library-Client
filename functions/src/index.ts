@@ -18,3 +18,5 @@ export {
 export * from './books';
 export * from './readers';
 export * from './loans';
+export * from './reviews';
+export * from './readingPlans';

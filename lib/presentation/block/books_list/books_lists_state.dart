@@ -9,10 +9,10 @@ abstract class BooksListState extends Equatable {
   List<Object> get props => [];
 }
 
-/// Початковий стан
+
 class BooksInitialState extends BooksListState {}
 
-/// Стан із потоком даних
+
 class BooksStreamState extends BooksListState {
   final List<String> categories;
   final Stream<List<Book>> booksStream;
@@ -23,7 +23,7 @@ class BooksStreamState extends BooksListState {
   List<Object> get props => [booksStream];
 }
 
-/// Помилка при завантаженні
+
 class BooksErrorState extends BooksListState {
   final String message;
 
@@ -34,3 +34,8 @@ class BooksErrorState extends BooksListState {
 }
 
 class BarcodeUpdated extends BooksListState {}
+
+class BarcodeUpdateError extends BooksListState {
+  final String message;
+  const BarcodeUpdateError(this.message);
+}

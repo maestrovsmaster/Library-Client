@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,8 +23,24 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  if (envConfig.useFirestoreEmulator == 'true') {
+    await _connectToFirebaseEmulator();
+  }
 
+  /**/
 
+  //Setup notifications
+  // Setup notifications
+  await _setupPushNotifications();
+
+  // ❗ Перевірка, чи відкрили додаток з повідомлення (terminated)
+  final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    _handleMessage(initialMessage);
+  }
+
+  // ❗ Відкриття з фону по пушу
+  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 
   // Initialize date formatting
   await initializeDateFormatting('en_GB', null);
@@ -33,12 +50,10 @@ Future<void> main() async {
 
   // Load environment variables and determine mock data source
 
-  if (envConfig.useFirestoreEmulator == 'true') {
-    await _connectToFirebaseEmulator();
-  }
+
 
   // Initialize dependencies
-  await di.init(baseUrl: envConfig.baseUrl, postfix: envConfig.postfix);
+  await di.init(baseUrl: envConfig.baseUrl, postfix: envConfig.postfix, booksPostfix: envConfig.booksPostfix);
 
   // Initialize localization
   final delegate = await _initLocalization();
@@ -61,14 +76,16 @@ Future<void> _initHive() async {
 
 Future<EnvConfig> _initEnv() async {
 
-  var envConfig = EnvConfig('http://192.168.0.25:5001/library-541e4/us-central1', '-dev', 'true');
+  var envConfig = EnvConfig('http://192.168.0.25:5001/library-541e4/us-central1', '-dev', '-dev', 'true');
 
   try {
     await dotenv.load(fileName: ".env");
     final baseUrl = dotenv.env['BASE_URL'] ?? 'http://192.168.0.25:5001/library-541e4/us-central1';
     final postfix = dotenv.env['POSTFIX'] ?? '';
+    final booksPostfix = dotenv.env['BOOX_COLLECTION_POSTFIX'] ?? '';
+
     final useFirestoreEmulator = dotenv.env['USE_FIRESTORE_EMULATOR'] ?? 'true';
-    envConfig = EnvConfig(baseUrl, postfix,useFirestoreEmulator);
+    envConfig = EnvConfig(baseUrl, postfix,booksPostfix , useFirestoreEmulator);
   } catch (e) {
     if (kDebugMode) {
       debugPrint("Warning: .env file not found. Using default values.");
@@ -97,6 +114,53 @@ Future<LocalizationDelegate> _initLocalization() async {
     fallbackLocale: 'en',
     supportedLocales: ['en', 'cs'],
   );
+}
+
+
+Future<void> _setupPushNotifications() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+
+  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
+  print('Push permission status: ${settings.authorizationStatus}');
+
+  // Отримання FCM токена
+  final fcmToken = await messaging.getToken();
+  print('FCM Token: $fcmToken');
+
+  // Збереження токена в Firestore
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null && fcmToken != null) {
+    await FirebaseFirestore.instance
+        .collection('users-dev')
+        .doc(user.uid)
+        .update({'fcmToken': fcmToken});
+  }
+
+  // Обробка повідомлень у foreground
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('📩 Push received in foreground!');
+    print('🔔 Title: ${message.notification?.title}');
+    print('📝 Body: ${message.notification?.body}');
+    // TODO: показати сповіщення в UI або SnackBar
+  });
+
+  // Обробка натискань по пушу (при відкритті)
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('🚀 User tapped on notification');
+    // TODO: навігація на екран з деталями книги
+  });
+
+
+}
+
+void _handleMessage(RemoteMessage message) {
+  final data = message.data;
+  final bookId = data['bookId'];
+
+  print('🚀 User tapped push. Book ID: $bookId');
+
+  // TODO: Навігація на екран книги або інше
 }
 
 

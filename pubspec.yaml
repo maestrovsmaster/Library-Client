@@ -43,6 +43,7 @@ dependencies:
   flutter_svg: ^2.0.7
   auto_size_text: ^3.0.0
   flutter_native_splash: ^2.4.4
+  shimmer: ^2.0.0
 
 
 
@@ -56,6 +57,7 @@ dependencies:
   cloud_functions: ^5.0.3
   firebase_analytics: ^11.2.0
   google_sign_in: ^6.3.0
+  firebase_messaging: ^15.2.5
 
   cached_network_image: ^3.4.1
 
@@ -112,6 +114,12 @@ flutter:
     - assets/images/star_empty.svg
     - assets/images/star_full.svg
     - assets/images/star_half.svg
+    - assets/images/default_avatar.png
+    - assets/images/collections_bookmark.svg
+    - assets/images/google_icon.png
+    - assets/images/ic_admin_panel.svg
+    - assets/images/img_family.png
+    - assets/images/ic_home.svg
 
 
   uses-material-design: true

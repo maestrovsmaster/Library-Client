@@ -8,7 +8,7 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   final SignInRepository repository;
 
   MainScreenBloc({required this.repository})
-      : super(MainScreenInitial(selectedIndex: 1, notificationCount: 0)) {
+      : super(MainScreenInitial(selectedIndex: 0, notificationCount: 0)) {
 
     on<SelectScreen>((event, emit) {
       if (state is MainScreenInitial) {

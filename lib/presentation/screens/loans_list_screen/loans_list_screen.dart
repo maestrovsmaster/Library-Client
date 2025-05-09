@@ -6,6 +6,7 @@ import 'package:leeds_library/presentation/block/loans_list/loans_list_bloc.dart
 import 'package:leeds_library/presentation/block/loans_list/loans_list_event.dart';
 import 'package:leeds_library/presentation/block/loans_list/loans_list_state.dart';
 import 'package:leeds_library/presentation/screens/loans_list_screen/loan_item.dart';
+import 'package:leeds_library/presentation/widgets/animated_checkmark.dart';
 
 class LoansListScreen extends StatefulWidget {
   const LoansListScreen({super.key});
@@ -16,6 +17,8 @@ class LoansListScreen extends StatefulWidget {
 
 class _LoansListScreenState extends State<LoansListScreen> {
   late final TextEditingController _searchController;
+
+  Stream<List<Loan>>? _loansStream;
 
   @override
   void initState() {
@@ -64,11 +67,25 @@ class _LoansListScreenState extends State<LoansListScreen> {
           },
         ),*/
       ),
-      body: BlocBuilder<LoansListBloc, LoansListState>(
+      body: BlocConsumer<LoansListBloc, LoansListState>(
+        listener: (BuildContext context, state) {
+          if (state is LoansErrorState) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          }
+          if (state is LoanClosed) {
+            showCheckmark(context);
+          }
+        },
         builder: (context, state) {
           if (state is LoansStreamState) {
-            return StreamBuilder<List<Loan>>(
-              stream: state.loansStream,
+            _loansStream = state.loansStream;
+          }
+
+          final isStreamActive = _loansStream != null;
+          return !isStreamActive ? Center(child: CircularProgressIndicator()) :
+             StreamBuilder<List<Loan>>(
+              stream: _loansStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -85,16 +102,17 @@ class _LoansListScreenState extends State<LoansListScreen> {
                     loan: loans[index],
                     onTap: (loan) {
                       // context.read<LoansListBloc>().add(LoanSelectedEvent(loan));
+                      context.read<LoansListBloc>().add(CloseLoanEvent(loan.id!, loan.book.id));
                     },
                   ),
                 );
               },
             );
-          } else if (state is LoansErrorState) {
+          /*else if (state is LoansErrorState) {
             return Center(child: Text(state.message));
           } else {
             return const Center(child: CircularProgressIndicator());
-          }
+          }*/
         },
       ),
     );

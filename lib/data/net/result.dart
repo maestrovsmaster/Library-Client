@@ -18,5 +18,22 @@ class Result<T, E> {
 
   bool get isSuccess => data != null;
   bool get isFailure => error != null;
-  bool get isEmpty => isNotFound; // Для зручності
+  bool get isEmpty => isNotFound;
+
+  R when<R>({
+    required R Function(T data) success,
+    required R Function() notFound,
+    required R Function(E error) failure,
+  }) {
+    if (isSuccess) {
+      return success(data as T);
+    } else if (isNotFound) {
+      return notFound();
+    } else if (isFailure) {
+      return failure(error as E);
+    } else {
+      throw Exception("Unhandled Result state");
+    }
+  }
+
 }

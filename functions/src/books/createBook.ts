@@ -2,9 +2,19 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { Timestamp } from 'firebase-admin/firestore';
+import { checkAuthAndRole } from '../middleware/middleware';
 
 export const createBook = functions.https.onRequest(async (req, res) => {
     try {
+
+        const { role } = await checkAuthAndRole(req);
+        
+
+        if (role !== 'admin' && role !== 'librarian') {
+             res.status(403).json({ message: 'Access denied: Insufficient permissions' });
+             return
+        }
+
         const { title, author, genre, barcode, imageUrl, publisher, description } = req.body;
 
         if (!title || !author || !genre) {

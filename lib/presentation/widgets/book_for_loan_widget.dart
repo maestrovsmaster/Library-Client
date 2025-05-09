@@ -45,7 +45,7 @@ class BookForLoanWidget extends StatelessWidget {
                                 child: Center(),
                               ),
                               errorWidget: (context, url, error) => Icon(
-                                  Icons.broken_image,
+                                  Icons.book,
                                   size: 50,
                                   color: Colors.grey[300]),
                             ),

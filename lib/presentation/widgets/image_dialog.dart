@@ -11,7 +11,7 @@ class ImageDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final imageHeight = screenWidth * 2; // Якщо у тебе пропорція 1:2
+    final imageHeight = screenWidth * 2;
 
     return Dialog(
       insetPadding: const EdgeInsets.all(16),
@@ -32,7 +32,7 @@ class ImageDialog extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 ),
                 errorWidget: (context, url, error) => Icon(
-                  Icons.broken_image,
+                  Icons.book,
                   size: 80,
                   color: Colors.grey[400],
                 ),

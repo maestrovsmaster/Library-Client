@@ -7,15 +7,18 @@ import 'package:leeds_library/presentation/block/user_google_auth/google_auth_bl
 import 'package:leeds_library/presentation/block/user_google_auth/google_auth_event.dart';
 import 'package:leeds_library/presentation/block/user_google_auth/google_auth_state.dart';
 import 'package:leeds_library/presentation/navigation/app_router.dart';
+import 'package:leeds_library/presentation/widgets/google_sign_in_button.dart';
 
 
 class GoogleSignInScreen extends StatelessWidget {
+  const GoogleSignInScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<GoogleAuthBloc>(),
       child: Scaffold(
-        appBar: AppBar(title: Text("Google Sign In")),
+        appBar: AppBar(title: Text("Sign In")),
         body: Center(
           child: BlocConsumer<GoogleAuthBloc, GoogleAuthState>(
             listener: (context, state) {
@@ -36,12 +39,18 @@ class GoogleSignInScreen extends StatelessWidget {
               } if(state is AuthenticatedButNotCompleted){
                 return Text("Authenticated with user: ${state.user}");
               }
-              return ElevatedButton(
+              return /*ElevatedButton(
                 onPressed: () {
                   context.read<GoogleAuthBloc>().add(GoogleSignInEvent());
                 },
                 child: Text("Sign in with Google"),
-              );
+              );*/
+
+                GoogleSignInButton(
+                  onPressed: () {
+                    context.read<GoogleAuthBloc>().add(GoogleSignInEvent());
+                  },
+                );
             },
           ),
         ),

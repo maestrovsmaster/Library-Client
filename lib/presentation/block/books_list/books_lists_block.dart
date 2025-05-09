@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:leeds_library/core/di/di_container.dart';
 import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/domain/repositories/books_repository.dart';
+import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
 import 'package:rxdart/rxdart.dart';
 import 'books_list_event.dart';
 import 'books_lists_state.dart';
@@ -17,10 +19,13 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
   Stream<List<Book>> get filteredBooksStream => _filteredBooksController.stream;
 
 
+
+
   BooksListBloc({required this.booksRepository}) : super(BooksInitialState()) {
     on<LoadBooksEvent>(_onLoadBooks);
     on<SearchQueryChangedEvent>(_onSearchQueryChanged);
     on<UpdateBarcode>(_onUpdateBarcode);
+   // on<LoadPlansEvent>(_onLoadPlans);
   }
 
   Future<void> _onLoadBooks(LoadBooksEvent event, Emitter<BooksListState> emit) async {
@@ -67,6 +72,40 @@ class BooksListBloc extends Bloc<BooksListEvent, BooksListState> {
   }
 
   Future<void> _onUpdateBarcode(UpdateBarcode event, Emitter<BooksListState> emit) async {
-    booksRepository.updateBookBarcode(event.id, event.code);
+    final result = await booksRepository.updateBookBarcode(event.id, event.code);
+    print("Barcode Update barcode result = ${result.isSuccess}");
+    if (result.isSuccess) {
+      print("Barcode updated");
+      emit(BarcodeUpdated());
+    } else {
+      print("Barcode update error: ${result.error}");
+      emit(BarcodeUpdateError(result.error!));
+    }
+
   }
+
+
+/*
+
+  Future<void> _onLoadPlans(LoadPlansEvent event, Emitter<BooksListState> emit) async {
+    final userCubit = sl<UserCubit>();
+    final me = userCubit.state;
+    if (me == null) return;
+
+    try {
+      final stream = booksRepository.myReadingPlanBooksStream(me.userId);
+
+      await emit.forEach<List<Book>>(
+        stream,
+        onData: (filteredBooks) => BooksListLoadedState(filteredBooks),
+        onError: (_, __) => BooksListErrorState(),
+      );
+    } catch (e) {
+      emit(BooksListErrorState());
+    }
+  }
+
+*/
+
+
 }

@@ -3,10 +3,14 @@ import 'package:leeds_library/data/models/app_user.dart';
 import 'package:leeds_library/data/models/book.dart';
 import 'package:leeds_library/presentation/screens/add_book_screen/add_book_screen.dart';
 import 'package:leeds_library/presentation/screens/add_reader_screen/add_reader_screen.dart';
+import 'package:leeds_library/presentation/screens/admin_dashboard/admin_dashboard.dart';
 import 'package:leeds_library/presentation/screens/book_details/book_details_screen.dart';
+import 'package:leeds_library/presentation/screens/categories_screen/categories_list_screen.dart';
 import 'package:leeds_library/presentation/screens/create_loan_screen/create_loan_screen.dart';
+import 'package:leeds_library/presentation/screens/genre_list_screen/genre_list_screen.dart';
 import 'package:leeds_library/presentation/screens/main_screen/main_screen.dart';
 import 'package:leeds_library/presentation/screens/register_user_screen/register_screen.dart';
+import 'package:leeds_library/presentation/screens/reviews_screen/reviews_screen.dart';
 import 'package:leeds_library/presentation/screens/sign_in_google_screen/google_sign_in_screen.dart';
 import 'package:leeds_library/presentation/screens/welcome_screen/welcome_screen.dart';
 
@@ -18,10 +22,15 @@ class AppRoutes {
   static const String googleSignIn = '/googleSignIn';
   static const String register = '/register';
   static const String main = '/main';
+  static const String admin = '/admin';
   static const String bookDetails = '/bookDetails';
   static const String addBook = '/addBook';
   static const String addReader = '/addReader';
   static const String createLoan = '/createLoan';
+  static const String reviews = '/reviews';
+  static const String readingPlans = '/readingPlans';
+  static const String categories = '/categories';
+  static const String genre = '/genre';
 }
 
 class AppRouter {
@@ -51,7 +60,7 @@ class AppRouter {
       GoRoute(
           path: AppRoutes.main,
           pageBuilder: (context, state) {
-            return const CustomTransitionPage(
+            return  CustomTransitionPage(
               child: MainScreen(),
               transitionsBuilder: slideTransition,
             );
@@ -96,6 +105,47 @@ class AppRouter {
               transitionsBuilder: slideTransition,
             );
           }),
+
+      GoRoute(
+          path: AppRoutes.reviews,
+          pageBuilder: (context, state) {
+            final book = state.extra as Book?;
+            return  CustomTransitionPage(
+              child: ReviewsList(book: book!),
+              transitionsBuilder: slideTransition,
+            );
+          }),
+
+      GoRoute(
+          path: AppRoutes.admin,
+          pageBuilder: (context, state) {
+            return  CustomTransitionPage(
+              child: AdminDashboardScreen(),
+              transitionsBuilder: slideTransition,
+            );
+          }),
+
+      GoRoute(
+          path: AppRoutes.categories,
+          pageBuilder: (context, state) {
+            return  CustomTransitionPage(
+              child: CategoriesListScreen(),
+              transitionsBuilder: slideTransition,
+            );
+          }),
+
+      GoRoute(
+          path: AppRoutes.genre,
+          pageBuilder: (context, state) {
+            final genre = state.extra as String?;
+            return  CustomTransitionPage(
+              child: GenreListScreen(genre: genre!),
+              transitionsBuilder: slideTransition,
+            );
+          }),
+
+
+
 
     ],
   );

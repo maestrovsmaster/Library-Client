@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:leeds_library/data/models/loan.dart';
 import 'package:leeds_library/data/net/result.dart';
+import 'package:leeds_library/presentation/block/user_cubit/user_cubit.dart';
 import 'package:rxdart/rxdart.dart';
 
 
@@ -9,11 +10,21 @@ class LoansRepository {
   final Dio _dio;
   final FirebaseFirestore firestore;
   final String postfix;
+  final  userCubit;
+
+  static const String collectionName = "loans";
+  String collectionPath = collectionName;
 
   final BehaviorSubject<List<Loan>> _loansController =
   BehaviorSubject.seeded([]);
 
-  LoansRepository(this._dio, this.firestore, {this.postfix = ''}){
+  LoansRepository(this._dio, this.firestore, this.userCubit, {this.postfix = ''}){
+    collectionPath = postfix.isEmpty?
+    collectionName:
+    "$collectionName-$postfix";
+
+    print("LoansRepository collectionPath = $collectionPath");
+
     _listenToFirestore();
   }
 
@@ -21,15 +32,40 @@ class LoansRepository {
   Stream<List<Loan>> get loansStream => _loansController.stream;
 
   void _listenToFirestore() {
-    final loansRepo = postfix.isEmpty?
-    "loans":
-    "loans-$postfix";
-    //final loansRepo = "loans-$postfix";
+    bool firstRefreshDone = false;
+    print("Loans collectionPath = $collectionPath");
+    firestore.collection(collectionPath).snapshots().listen((snapshot) {
+      print("Loans listen");
+      // Якщо перше оновлення ще не з мережі — пропускаємо кеш
+      if (snapshot.metadata.isFromCache && !firstRefreshDone) {
+        return;
+      }
+
+      if (!snapshot.metadata.isFromCache) {
+        firstRefreshDone = true;
+      }
+
+
+      final loans = snapshot.docs
+          .map((doc) => Loan.fromFirestore(doc))
+          .where((loan) => loan.dateReturned == null || loan.dateReturned == '')
+          .toList();
+
+      print("Loans listen 2 loans = $loans");
+
+
+      _loansController.add(loans);
+    });
+  }
+
+
+  /*void _listenToFirestore() {
+
     bool firstRefreshDone = false;
 
-    firestore.collection(loansRepo)
-        //.where('dateReturned', isNull: true)
-        .where('dateReturned', whereIn: [''])
+    firestore.collection(collectionPath)
+        //.where('dateReturned', whereIn: [''])
+        //.where('dateReturned', isEqualTo: '')
         .snapshots()
         .listen((snapshot) {
       // Якщо це кеш, і перше оновлення ще не отримано з мережі — ігноруємо
@@ -71,7 +107,7 @@ class LoansRepository {
         _loansController.add(loans);
       }
     });
-  }
+  }*/
 
 
   Future<Result<Loan?, String>> createLoan(Loan loan) async {
@@ -98,7 +134,8 @@ class LoansRepository {
     }
   }
 
-  Future<Result<void, String>> closeLoan({String? loanId, String? bookId}) async {
+  Future<Result<bool, String>> closeLoan({String? loanId, String? bookId}) async {
+    print("Repository Closing loan with id: ${loanId}, bookId: ${bookId}");
     try {
       final response = await _dio.post(
         '/loans-closeLoan',
@@ -108,9 +145,9 @@ class LoansRepository {
         },
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-
+      print("Repository Closing response.statusCode: ${response.statusCode}, ");
       if (response.statusCode == 200) {
-        return Result.success(null);
+        return Result.success(true);
       } else {
         return Result.failure("Server returned an error: ${response.statusCode}");
       }
@@ -120,12 +157,38 @@ class LoansRepository {
     }
   }
 
+  Future<Result<List<Loan>, String>> getMyLoans() async {
+
+    final userId = userCubit.state.readerId;
+    print("Repository getMyLoans: ${userId}");
+    try {
+      final response = await _dio.post(
+        '/loans-getMyLoans',
+        data: {
+          if (userId != null) 'userId': userId,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      print("Repository loans response.statusCode: ${response.statusCode}, ");
+      if (response.statusCode == 200) {
+        print("Repository loans response: ${response.data}, ");
+        List<Loan> loans = response.data.map<Loan>((loanData) => Loan.fromJson(loanData)).toList();
+        return Result.success(loans);
+      } else {
+        return Result.failure("Server returned an error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print('Error closing loan: $e');
+      return Result.failure("Network error: $e");
+
+    }
+  }
+
 
   Future<List<Loan>> getActiveLoans() async {
-    final collectionName = 'loans-$postfix';
 
     final snapshot = await firestore
-        .collection(collectionName)
+        .collection(collectionPath)
         .where('dateReturned', isNull: true)
         .get();
 

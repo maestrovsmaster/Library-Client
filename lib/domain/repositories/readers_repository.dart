@@ -8,7 +8,14 @@ class ReadersRepository {
   final FirebaseFirestore firestore;
   final String postfix;
 
-  ReadersRepository(this._dio, this.firestore, {this.postfix = ''});
+  static const String collectionName = "readers";
+  String collectionPath = collectionName;
+
+  ReadersRepository(this._dio, this.firestore, {this.postfix = ''}){
+    collectionPath = postfix.isEmpty?
+    collectionName:
+    "$collectionName-$postfix";
+  }
 
   Future<Result<Reader?, String>> createReader(Reader reader) async {
     try {
@@ -35,10 +42,9 @@ class ReadersRepository {
   }
 
   Future<List<Reader>> searchByName(String query) async {
-    final bookRepo = 'readers-$postfix';
 
     final snapshot = await firestore
-        .collection(bookRepo)
+        .collection(collectionPath)
         .where('name', isGreaterThanOrEqualTo: query)
         .where('name', isLessThanOrEqualTo: query + '\uf8ff')
         .get();
