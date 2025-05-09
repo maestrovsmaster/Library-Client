@@ -33,8 +33,9 @@ class LoansRepository {
 
   void _listenToFirestore() {
     bool firstRefreshDone = false;
-
+    print("Loans collectionPath = $collectionPath");
     firestore.collection(collectionPath).snapshots().listen((snapshot) {
+      print("Loans listen");
       // Якщо перше оновлення ще не з мережі — пропускаємо кеш
       if (snapshot.metadata.isFromCache && !firstRefreshDone) {
         return;
@@ -44,10 +45,14 @@ class LoansRepository {
         firstRefreshDone = true;
       }
 
+
       final loans = snapshot.docs
           .map((doc) => Loan.fromFirestore(doc))
           .where((loan) => loan.dateReturned == null || loan.dateReturned == '')
           .toList();
+
+      print("Loans listen 2 loans = $loans");
+
 
       _loansController.add(loans);
     });
